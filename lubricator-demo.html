@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蜀利元智能润滑系统 - 远程监控演示</title>
+    <style>
+        /* --- 全局变量与基础设置 --- */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --motor-color: #475569;
+            --motor-detail: #64748b;
+            --brand-orange: #ff6b00;
+            --brand-blue: #0056b3;
+            --oil-color: #f59e0b;
+            --phone-bezel: #1e293b;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- 16:9 舞台容器 --- */
+        #stage {
+            width: 100vw;
+            max-width: 177.78vh;
+            height: 56.25vw;
+            max-height: 100vh;
+            background: var(--bg-gradient);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* 电影遮幅 */
+        .cinema-bar {
+            position: absolute;
+            width: 100%;
+            height: 8%;
+            background: #0f172a;
+            z-index: 100;
+            left: 0;
+        }
+        .bar-top { top: 0; display: flex; align-items: center; padding-left: 5%; }
+        .bar-bottom { bottom: 0; }
+
+        .brand-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            opacity: 0.9;
+        }
+        .brand-highlight { color: var(--brand-orange); }
+
+        /* --- 字幕系统 --- */
+        .subtitle-container {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 90;
+            width: 80%;
+            text-shadow: 0 2px 4px rgba(255,255,255,0.8);
+        }
+        .sub-cn {
+            font-size: 2.2vw;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 0.5vh;
+            transition: opacity 0.5s;
+        }
+        .sub-en {
+            font-size: 1.2vw;
+            color: var(--text-secondary);
+            font-weight: 300;
+            transition: opacity 0.5s;
+        }
+
+        /* --- 布局区域 --- */
+        .zone-left {
+            position: absolute;
+            left: 5%;
+            top: 20%;
+            width: 50%;
+            height: 60%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .zone-right {
+            position: absolute;
+            right: 5%;
+            top: 15%;
+            width: 35%;
+            height: 70%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- 电机模型 --- */
+        .motor-container {
+            position: relative;
+            width: 360px;
+            height: 280px;
+        }
+
+        .motor-base {
+            width: 300px;
+            height: 200px;
+            background: var(--motor-color);
+            border-radius: 20px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            box-shadow: inset 10px 10px 20px rgba(255,255,255,0.1), 10px 20px 30px rgba(0,0,0,0.3);
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(0,0,0,0.2) 20px, rgba(0,0,0,0.2) 24px);
+            z-index: 10;
+        }
+
+        .motor-shaft-housing {
+            position: absolute;
+            right: -20px;
+            bottom: 60px;
+            width: 50px;
+            height: 80px;
+            background: var(--motor-detail);
+            border-radius: 10px;
+            z-index: 5;
+        }
+
+        .motor-shaft {
+            position: absolute;
+            right: -60px;
+            bottom: 80px;
+            width: 80px;
+            height: 40px;
+            background: #cbd5e1;
+            border-radius: 4px;
+            z-index: 4;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .shaft-line {
+            width: 100%;
+            height: 4px;
+            background: #94a3b8;
+            position: absolute;
+            top: 10px;
+        }
+        .shaft-line:nth-child(2) { top: 26px; }
+
+        @keyframes spin { 0% { transform: translateY(0); } 100% { transform: translateY(4px); } }
+        .spinning .shaft-line { animation: spin 0.1s linear infinite; }
+
+        .injection-area {
+            position: absolute;
+            top: -5px;
+            left: 95px;
+            width: 30px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            z-index: 11;
+        }
+
+        /* --- 蜀利元润滑器 --- */
+        .lubricator {
+            position: absolute;
+            left: 85px;
+            top: -250px;
+            width: 70px;
+            height: 120px;
+            z-index: 20;
+            transition: top 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(5px 5px 10px rgba(0,0,0,0.2));
+            transform-origin: bottom center;
+        }
+
+        .lub-head {
+            width: 100%;
+            height: 30px;
+            background: var(--brand-orange);
+            border-radius: 8px 8px 0 0;
+            color: white;
+            font-size: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .lub-tank {
+            width: 100%;
+            height: 80px;
+            background: rgba(255,255,255,0.9);
+            border: 2px solid #cbd5e1;
+            border-top: none;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .oil-level {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 90%;
+            background: linear-gradient(to top, #fbbf24, var(--oil-color));
+            transition: height 15s linear;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .lub-nozzle {
+            width: 20px;
+            height: 15px;
+            background: #475569;
+            margin: 0 auto;
+            border-radius: 0 0 4px 4px;
+            position: relative;
+            top: -1px;
+        }
+
+        .oil-tube {
+            position: absolute;
+            left: 25px;
+            top: 120px;
+            width: 6px;
+            height: 0;
+            background: linear-gradient(to bottom, #94a3b8 0%, #64748b 100%);
+            z-index: 8;
+            border-radius: 3px;
+            opacity: 0;
+            transform-origin: top center;
+        }
+
+        .oil-flow {
+            position: absolute;
+            left: 25px;
+            top: 120px;
+            width: 6px;
+            height: 0;
+            background: var(--oil-color);
+            opacity: 0;
+            z-index: 9;
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+        }
+        
+        @keyframes flowAnim {
+            0% { height: 0; opacity: 1; }
+            50% { height: 60px; opacity: 1; }
+            100% { height: 60px; opacity: 0; transform: translateY(10px); }
+        }
+        .flowing {
+            animation: flowAnim 1.2s infinite;
+        }
+
+        /* --- 手机界面 --- */
+        .phone {
+            width: 260px;
+            height: 520px;
+            background: var(--phone-bezel);
+            border-radius: 35px;
+            padding: 12px;
+            box-shadow: 20px 20px 50px rgba(0,0,0,0.3);
+            transform: translateX(150%);
+            transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #f8fafc;
+            border-radius: 25px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .status-bar { height: 20px; background: white; width: 100%; }
+        
+        .app-nav {
+            background: var(--brand-blue);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .app-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
+        .app-subtitle { font-size: 10px; opacity: 0.8; }
+
+        .dashboard {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .card-info { text-align: right; }
+        .card-label { font-size: 10px; color: #64748b; }
+        .card-value { font-size: 16px; font-weight: bold; color: #0f172a; }
+
+        .control-btn {
+            margin-top: auto;
+            width: 100%;
+            height: 50px;
+            border-radius: 25px;
+            border: none;
+            background: #10b981;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .control-btn.stop-mode {
+            background: #ef4444;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+        }
+
+        /* --- 信号传输动画 --- */
+        .signal-path {
+            position: absolute;
+            top: 40%;
+            left: 30%;
+            width: 40%;
+            height: 2px;
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        .signal-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--brand-blue);
+            border-radius: 50%;
+            top: -3px;
+            opacity: 0;
+            box-shadow: 0 0 10px var(--brand-blue);
+        }
+
+        @keyframes transmitLeft {
+            0% { left: 100%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { left: 0%; opacity: 0; }
+        }
+        @keyframes transmitRight {
+            0% { left: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { left: 100%; opacity: 0; }
+        }
+
+        /* --- 状态类 --- */
+        .lub-installed { top: -10px !important; }
+        .tube-extended { height: 60px !important; opacity: 1 !important; }
+        .phone-visible { transform: translateX(0) !important; }
+        .vibrating { animation: vibrate 0.1s infinite; }
+
+        @keyframes vibrate {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(1px, 1px); }
+            50% { transform: translate(-1px, -1px); }
+            75% { transform: translate(-1px, 1px); }
+            100% { transform: translate(0, 0); }
+        }
+        
+        @keyframes installShake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(1deg); }
+            50% { transform: rotate(-1deg); }
+            75% { transform: rotate(0.5deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        .installing {
+            animation: installShake 0.3s ease-in-out 3;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="stage">
+        <div class="cinema-bar bar-top">
+            <div class="brand-title">蜀利元 <span class="brand-highlight">SHULIYUAN</span></div>
+        </div>
+        
+        <div class="zone-left">
+            <div class="motor-container" id="motor-group">
+                <div class="lubricator" id="lubricator">
+                    <div class="lub-head">蜀利元</div>
+                    <div class="lub-tank">
+                        <div class="oil-level" id="real-oil-level"></div>
+                    </div>
+                    <div class="lub-nozzle"></div>
+                </div>
+                
+                <div class="oil-tube" id="oil-tube"></div>
+                <div class="oil-flow" id="oil-flow-anim"></div>
+
+                <div class="motor-base"></div>
+                <div class="motor-shaft-housing"></div>
+                <div class="motor-shaft spinning" id="shaft">
+                    <div class="shaft-line"></div>
+                    <div class="shaft-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="signal-path" id="signal-layer"></div>
+
+        <div class="zone-right">
+            <div class="phone" id="phone-device">
+                <div class="screen">
+                    <div class="status-bar"></div>
+                    <div class="app-nav">
+                        <div class="app-title">智能润滑监控</div>
+                        <div class="app-subtitle">Device ID: SLY-2023-X</div>
+                    </div>
+                    <div class="dashboard">
+                        <div class="card">
+                            <div class="card-icon" style="background:#fff7ed; color:orange;">🛢</div>
+                            <div>
+                                <div class="card-label">剩余油量 Oil Level</div>
+                                <div class="card-value" id="disp-oil">100%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-icon" style="background:#fef2f2; color:red;">🌡</div>
+                            <div class="card-info">
+                                <div class="card-label">电机温度 Temp</div>
+                                <div class="card-value" id="disp-temp">42.5°C</div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-icon" style="background:#eff6ff; color:blue;">⚡</div>
+                            <div class="card-info">
+                                <div class="card-label">振动监测 Vib</div>
+                                <div class="card-value" id="disp-vib">2.8 mm/s</div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                            <div class="card-icon" style="font-size:14px;">⚙️</div>
+                            <div class="card-info">
+                                <div class="card-label">工作状态 Status</div>
+                                <div class="card-value" style="color:green; font-size:14px;" id="disp-status">自动注油中...</div>
+                            </div>
+                        </div>
+
+                        <button class="control-btn" id="btn-control">
+                            <span>●</span> 运行中 RUNNING
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="subtitle-container">
+            <div class="sub-cn" id="txt-cn"></div>
+            <div class="sub-en" id="txt-en"></div>
+        </div>
+        <div class="cinema-bar bar-bottom"></div>
+    </div>
+
+    <script>
+        const els = {
+            lubricator: document.getElementById('lubricator'),
+            phone: document.getElementById('phone-device'),
+            oilLevel: document.getElementById('real-oil-level'),
+            oilTube: document.getElementById('oil-tube'),
+            oilFlow: document.getElementById('oil-flow-anim'),
+            motorGroup: document.getElementById('motor-group'),
+            shaft: document.getElementById('shaft'),
+            cn: document.getElementById('txt-cn'),
+            en: document.getElementById('txt-en'),
+            btn: document.getElementById('btn-control'),
+            dispOil: document.getElementById('disp-oil'),
+            dispTemp: document.getElementById('disp-temp'),
+            dispVib: document.getElementById('disp-vib'),
+            dispStatus: document.getElementById('disp-status'),
+            signalLayer: document.getElementById('signal-layer')
+        };
+
+        let dataInterval = null;
+        let isRunning = true;
+        let currentOilLevel = 100;
+        let oilConsumptionActive = false;
+        let timeline = [];
+        let timeoutIds = [];
+
+        function sendSignal(direction = 'right') {
+            const particle = document.createElement('div');
+            particle.className = 'signal-particle';
+            particle.style.animation = `${direction === 'right' ? 'transmitRight' : 'transmitLeft'} 1s linear forwards`;
+            els.signalLayer.appendChild(particle);
+            setTimeout(() => particle.remove(), 1000);
+        }
+
+        function setSubtitle(cn, en) {
+            els.cn.style.opacity = 0;
+            els.en.style.opacity = 0;
+            setTimeout(() => {
+                els.cn.innerText = cn;
+                els.en.innerText = en;
+                els.cn.style.opacity = 1;
+                els.en.style.opacity = 1;
+            }, 500);
+        }
+
+        function startOilConsumption() {
+            if (oilConsumptionActive) return;
+            oilConsumptionActive = true;
+            
+            els.oilLevel.style.transition = "height 15s linear";
+            
+            setTimeout(() => {
+                els.oilLevel.style.height = "50%";
+                currentOilLevel = 50;
+                
+                const oilDecreaseInterval = setInterval(() => {
+                    if (currentOilLevel <= 50) {
+                        clearInterval(oilDecreaseInterval);
+                        return;
+                    }
+                    
+                    currentOilLevel -= 0.5;
+                    els.dispOil.innerText = `${Math.max(50, currentOilLevel).toFixed(1)}%`;
+                    
+                    if (currentOilLevel < 60) {
+                        els.dispOil.style.color = "#f97316";
+                    }
+                    
+                    if (currentOilLevel < 55) {
+                        els.dispOil.style.color = "#ef4444";
+                        els.dispStatus.innerText = "油量不足 Low Oil";
+                        els.dispStatus.style.color = "#ef4444";
+                    }
+                }, 225);
+                
+            }, 1000);
+        }
+
+        function startDataSim() {
+            if (dataInterval) clearInterval(dataInterval);
+            dataInterval = setInterval(() => {
+                if (!isRunning) return;
+                const temp = (42 + Math.random() * 3).toFixed(1);
+                els.dispTemp.innerText = temp + "°C";
+                const vib = (2.5 + Math.random() * 0.5).toFixed(1);
+                els.dispVib.innerText = vib + " mm/s";
+                
+                if (Math.random() > 0.7) sendSignal('left');
+            }, 800);
+        }
+
+        function resetSystem() {
+            timeoutIds.forEach(id => clearTimeout(id));
+            timeoutIds = [];
+            if (dataInterval) clearInterval(dataInterval);
+            
+            els.lubricator.classList.remove('lub-installed', 'installing');
+            els.phone.classList.remove('phone-visible');
+            els.oilTube.classList.remove('tube-extended');
+            els.oilFlow.classList.remove('flowing');
+            els.motorGroup.classList.remove('vibrating');
+            els.shaft.classList.add('spinning');
+            els.btn.classList.remove('stop-mode');
+            
+            currentOilLevel = 100;
+            oilConsumptionActive = false;
+            els.oilLevel.style.transition = "none";
+            els.oilLevel.style.height = "90%";
+            els.dispOil.innerText = "100%";
+            els.dispOil.style.color = "#0f172a";
+            
+            els.dispTemp.innerText = "42.5°C";
+            els.dispVib.innerText = "2.8 mm/s";
+            els.dispStatus.innerText = "自动注油中...";
+            els.dispStatus.style.color = "green";
+            els.btn.innerHTML = "<span>●</span> 运行中 RUNNING";
+            
+            els.signalLayer.innerHTML = '';
+            isRunning = true;
+        }
+
+        function createTimeline() {
+            return [
+                {
+                    time: 500,
+                    cn: "设备运行时，传统的润滑方式往往难以实时监控。",
+                    en: "Traditional lubrication methods are hard to monitor in real-time.",
+                    fn: () => {
+                        els.motorGroup.classList.add('vibrating');
+                    }
+                },
+                {
+                    time: 4500,
+                    cn: "安装蜀利元智能单点润滑器，只需一步。",
+                    en: "Install Shu Li Yuan Smart Lubricator in just one step.",
+                    fn: () => {
+                        els.lubricator.classList.add('installing');
+                        
+                        setTimeout(() => {
+                            els.lubricator.classList.add('lub-installed');
+                        }, 300);
+                        
+                        setTimeout(() => {
+                            els.lubricator.classList.remove('installing');
+                            els.oilTube.classList.add('tube-extended');
+                        }, 1800);
+                    }
+                },
+                {
+                    time: 8000,
+                    cn: "系统自动开启注油，精准润滑电机轴承。",
+                    en: "The system automatically starts lubrication for the bearings.",
+                    fn: () => {
+                        els.oilFlow.classList.add('flowing');
+                        
+                        setTimeout(() => {
+                            startOilConsumption();
+                        }, 1000);
+                        
+                        setTimeout(() => {
+                            els.motorGroup.classList.remove('vibrating');
+                        }, 2000);
+                    }
+                },
+                {
+                    time: 12000,
+                    cn: "通过手机App远程连接，数据一目了然。",
+                    en: "Connect remotely via the App to see all data at a glance.",
+                    fn: () => {
+                        els.phone.classList.add('phone-visible');
+                        setTimeout(() => {
+                            sendSignal('left');
+                            sendSignal('right');
+                            startDataSim();
+                        }, 1000);
+                    }
+                },
+                {
+                    time: 16000,
+                    cn: "实时监测油量、温度与振动，异常情况尽在掌握。",
+                    en: "Monitor oil level, temp, and vibration in real-time.",
+                    fn: () => {
+                        els.dispTemp.style.color = "#ef4444";
+                        setTimeout(() => els.dispTemp.style.color = "#0f172a", 1000);
+                    }
+                },
+                {
+                    time: 21000,
+                    cn: "一键远程启停，让维护管理更安全高效。",
+                    en: "One-click remote Start/Stop for safer and efficient maintenance.",
+                    fn: () => {
+                        const btn = els.btn;
+                        btn.style.transform = "scale(0.95)";
+                        
+                        sendSignal('right');
+                        sendSignal('right');
+                        sendSignal('right');
+
+                        setTimeout(() => {
+                            btn.style.transform = "scale(1)";
+                            btn.classList.add('stop-mode');
+                            btn.innerHTML = "<span>■</span> 已停止 STOPPED";
+                            els.dispStatus.innerText = "已暂停 Paused";
+                            els.dispStatus.style.color = "red";
+                            
+                            isRunning = false;
+                            els.shaft.classList.remove('spinning');
+                            els.oilFlow.classList.remove('flowing');
+                            els.dispVib.innerText = "0.0 mm/s";
+                            els.motorGroup.classList.remove('vibrating');
+                        }, 800);
+                    }
+                },
+                {
+                    time: 26000,
+                    cn: "蜀利元 —— 您的智能润滑专家。",
+                    en: "Shu Li Yuan — Your Smart Lubrication Expert.",
+                    fn: () => {
+                        setTimeout(() => {
+                            resetSystem();
+                            startDemo();
+                        }, 10000);
+                    }
+                }
+            ];
+        }
+
+        function startDemo() {
+            resetSystem();
+            timeline = createTimeline();
+            
+            timeline.forEach((item, index) => {
+                const timeoutId = setTimeout(() => {
+                    setSubtitle(item.cn, item.en);
+                    if (item.fn) item.fn();
+                }, item.time);
+                timeoutIds.push(timeoutId);
+            });
+        }
+
+        window.onload = () => {
+            startDemo();
+            
+            els.btn.addEventListener('click', function() {
+                if (isRunning) {
+                    this.classList.add('stop-mode');
+                    this.innerHTML = "<span>■</span> 已停止 STOPPED";
+                    els.dispStatus.innerText = "已暂停 Paused";
+                    els.dispStatus.style.color = "red";
+                    isRunning = false;
+                    els.shaft.classList.remove('spinning');
+                    els.oilFlow.classList.remove('flowing');
+                    els.dispVib.innerText = "0.0 mm/s";
+                    els.motorGroup.classList.remove('vibrating');
+                    sendSignal('right');
+                } else {
+                    this.classList.remove('stop-mode');
+                    this.innerHTML = "<span>●</span> 运行中 RUNNING";
+                    els.dispStatus.innerText = "自动注油中...";
+                    els.dispStatus.style.color = "green";
+                    isRunning = true;
+                    els.shaft.classList.add('spinning');
+                    els.oilFlow.classList.add('flowing');
+                    startDataSim();
+                    sendSignal('left');
+                }
+            });
+        };
+
+        els.oilLevel.style.height = "90%";
+        els.oilTube.style.height = "0px";
+    </script>
+</body>
+</html>

@@ -881,6 +881,44 @@
             border-left: 4px solid #00AA00;
         }
 
+        /* 注油器动画演示iframe样式 */
+        .demo-container {
+            width: 100%;
+            height: 600px;
+            margin: 30px 0;
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-heavy);
+            position: relative;
+            border: 2px solid var(--primary-orange);
+        }
+
+        .demo-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .demo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(255,102,0,0.1), transparent);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .demo-note {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+            font-style: italic;
+        }
+
         /* 页脚 */
         .footer {
             background-color: var(--primary-dark);
@@ -1100,6 +1138,11 @@
             [class*="animation"], [class*="pulse"] {
                 animation: none !important;
             }
+
+            /* 隐藏演示容器 */
+            .demo-container {
+                display: none !important;
+            }
         }
 
         /* 触摸设备优化 */
@@ -1170,6 +1213,10 @@
             .nav-links a {
                 font-size: 0.85rem;
             }
+
+            .demo-container {
+                height: 500px;
+            }
         }
 
         /* 响应式设计 - 小屏幕平板和大屏手机 */
@@ -1192,6 +1239,10 @@
             
             .quick-nav {
                 display: block;
+            }
+
+            .demo-container {
+                height: 450px;
             }
         }
 
@@ -1350,6 +1401,10 @@
             .quick-nav {
                 display: block;
             }
+
+            .demo-container {
+                height: 400px;
+            }
         }
 
         /* 响应式设计 - 手机 */
@@ -1444,6 +1499,10 @@
             .quick-nav a span {
                 font-size: 0.7rem;
             }
+
+            .demo-container {
+                height: 350px;
+            }
         }
 
         /* 超小屏幕手机 */
@@ -1489,7 +1548,85 @@
             .share-button {
                 bottom: 125px;
             }
-        }
+
+            .demo-container {
+                height: 300px;
+            }
+      /* 注油器动画演示iframe样式 */
+.demo-container {
+    width: 100%;
+    height: 600px;
+    margin: 30px 0;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-heavy);
+    position: relative;
+    border: 2px solid var(--primary-orange);
+}
+
+.demo-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+.demo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(255,102,0,0.1), transparent);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.demo-note {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: var(--gray-medium);
+    font-style: italic;
+}
+
+/* 响应式调整 */
+@media (max-width: 1024px) {
+    .demo-container {
+        height: 500px;
+    }
+}
+
+@media (max-width: 900px) {
+    .demo-container {
+        height: 450px;
+    }
+}
+
+@media (max-width: 768px) {
+    .demo-container {
+        height: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .demo-container {
+        height: 350px;
+    }
+}
+
+@media (max-width: 360px) {
+    .demo-container {
+        height: 300px;
+    }
+}
+
+/* 打印时隐藏演示容器 */
+@media print {
+    .demo-container {
+        display: none !important;
+    }
+}  }
     </style>
 </head>
 <body>
@@ -2199,7 +2336,24 @@
                     <p class="section-subtitle">Core Features</p>
                 </div>
             </div>
-            
+            <!-- 智能润滑系统动画演示 -->
+<div style="margin-top: 40px;">
+    <h3 style="color: var(--primary-orange); margin-bottom: 20px; text-align: center; font-size: 1.4rem;">
+        <i class="fas fa-play-circle" style="margin-right: 8px;"></i>智能润滑系统动画演示
+    </h3>
+    
+    <div class="demo-container">
+        <iframe src="lubricator-demo.html" id="lubricator-demo" 
+                title="蜀利元智能润滑系统动画演示" 
+                allowfullscreen></iframe>
+        <div class="demo-overlay"></div>
+    </div>
+    
+    <div class="demo-note">
+        <p>演示展示了蜀利元智能润滑系统的工作原理：润滑器自动安装到电机上，通过远程手机App实现监控和控制。</p>
+        <p>点击手机界面上的按钮可以远程启停系统，观察油量变化和信号传输过程。</p>
+    </div>
+</div>
             <div class="features-grid">
                 <div class="feature-item">
                     <div class="feature-icon">
@@ -2289,7 +2443,8 @@
                     </div>
                 </div>
             </div>
-        </section>
+            
+                 </section>
 
         <!-- 应用场景 -->
         <section id="applications" class="section">
@@ -2970,67 +3125,546 @@
             lastTouchEnd = now;
         }, false);
         
-        // 页面加载完成后执行
-        window.addEventListener('DOMContentLoaded', () => {
-            updateCurrentTime();
-            updateLoadingBar();
-            
-            // 设置当前时间，每小时更新一次
-            setInterval(updateCurrentTime, 3600000);
-            
-            // 初始化网络状态
-            if (!navigator.onLine) {
-                showNetworkNotification('当前处于离线状态，部分功能可能受限');
-            }
-            
-            // 显示/隐藏快速导航（移动端）
-            if (window.innerWidth <= 900) {
-                quickNav.style.display = 'block';
-            }
-            
-            // 添加键盘快捷键
-            document.addEventListener('keydown', (e) => {
-                // Ctrl+P 打印
-                if (e.ctrlKey && e.key === 'p') {
-                    e.preventDefault();
-                    printDocument();
-                }
-                // ESC 关闭菜单
-                if (e.key === 'Escape' && navLinks.classList.contains('active')) {
-                    navLinks.classList.remove('active');
-                    document.body.style.overflow = '';
-                    const icon = mobileMenuBtn.querySelector('i');
-                    if (icon) {
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                    mobileMenuBtn.setAttribute('aria-expanded', 'false');
-                }
-            });
-            
-            // 改善移动端滚动性能
-            document.addEventListener('touchmove', function(e) {
-                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
-                    return;
-                }
-            }, { passive: true });
-        });
-        
-        // 窗口大小变化时更新快速导航显示
-        window.addEventListener('resize', () => {
-            if (window.innerWidth <= 900) {
-                quickNav.style.display = 'block';
-            } else {
-                quickNav.style.display = 'none';
-            }
-        });
-        
-        // 改善移动端点击延迟
-        if ('addEventListener' in document) {
-            document.addEventListener('DOMContentLoaded', function() {
-                FastClick.attach(document.body);
-            }, false);
+        // 注油器动画演示代码
+        const lubricatorDemoHTML = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蜀利元智能润滑系统 - 远程监控演示</title>
+    <style>
+        /* --- 全局变量与基础设置 --- */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --motor-color: #475569;
+            --motor-detail: #64748b;
+            --brand-orange: #ff6b00;
+            --brand-blue: #0056b3;
+            --oil-color: #f59e0b; /* 润滑油金黄色 */
+            --phone-bezel: #1e293b;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
         }
-    </script>
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000; /* 影院背景 */
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- 16:9 舞台容器 --- */
+        #stage {
+            width: 100vw;
+            max-width: 177.78vh; /* 强制16:9 */
+            height: 56.25vw;
+            max-height: 100vh;
+            background: var(--bg-gradient);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* 电影遮幅 */
+        .cinema-bar {
+            position: absolute;
+            width: 100%;
+            height: 8%;
+            background: #0f172a;
+            z-index: 100;
+            left: 0;
+        }
+        .bar-top { top: 0; display: flex; align-items: center; padding-left: 5%; }
+        .bar-bottom { bottom: 0; }
+
+        /* 顶部品牌Logo */
+        .brand-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            opacity: 0.9;
+        }
+        .brand-highlight { color: var(--brand-orange); }
+
+        /* --- 字幕系统 --- */
+        .subtitle-container {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 90;
+            width: 80%;
+            text-shadow: 0 2px 4px rgba(255,255,255,0.8);
+        }
+        .sub-cn {
+            font-size: 2.2vw;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 0.5vh;
+            transition: opacity 0.5s;
+        }
+        .sub-en {
+            font-size: 1.2vw;
+            color: var(--text-secondary);
+            font-weight: 300;
+            transition: opacity 0.5s;
+        }
+
+        /* --- 布局区域 --- */
+        .zone-left {
+            position: absolute;
+            left: 5%;
+            top: 20%;
+            width: 50%;
+            height: 60%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .zone-right {
+            position: absolute;
+            right: 5%;
+            top: 15%;
+            width: 35%;
+            height: 70%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- 电机模型 --- */
+        .motor-container {
+            position: relative;
+            width: 360px;
+            height: 280px;
+        }
+
+        .motor-base {
+            width: 300px;
+            height: 200px;
+            background: var(--motor-color);
+            border-radius: 20px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            box-shadow: inset 10px 10px 20px rgba(255,255,255,0.1), 10px 20px 30px rgba(0,0,0,0.3);
+            /* 散热片纹理 */
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(0,0,0,0.2) 20px, rgba(0,0,0,0.2) 24px);
+            z-index: 10;
+        }
+
+        .motor-shaft-housing {
+            position: absolute;
+            right: -20px;
+            bottom: 60px;
+            width: 50px;
+            height: 80px;
+            background: var(--motor-detail);
+            border-radius: 10px;
+            z-index: 5;
+        }
+
+        .motor-shaft {
+            position: absolute;
+            right: -60px;
+            bottom: 80px;
+            width: 80px;
+            height: 40px;
+            background: #cbd5e1;
+            border-radius: 4px;
+            z-index: 4;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        /* 转轴旋转动画 */
+        .shaft-line {
+            width: 100%;
+            height: 4px;
+            background: #94a3b8;
+            position: absolute;
+            top: 10px;
+        }
+        .shaft-line:nth-child(2) { top: 26px; }
+
+        @keyframes spin { 0% { transform: translateY(0); } 100% { transform: translateY(4px); } }
+        .spinning .shaft-line { animation: spin 0.1s linear infinite; }
+
+        /* 注油口位置标记（仅视觉参考，无实际元素） */
+        .injection-area {
+            position: absolute;
+            top: -5px;
+            left: 95px;
+            width: 30px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            z-index: 11;
+        }
+
+        /* --- 蜀利元润滑器（安装在电机上方） --- */
+        .lubricator {
+            position: absolute;
+            left: 85px; /* 调整位置，对齐注油口 */
+            top: -250px; /* 初始位置在更上方 */
+            width: 70px;
+            height: 120px;
+            z-index: 20;
+            transition: top 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(5px 5px 10px rgba(0,0,0,0.2));
+            transform-origin: bottom center;
+        }
+
+        .lub-head {
+            width: 100%;
+            height: 30px;
+            background: var(--brand-orange);
+            border-radius: 8px 8px 0 0;
+            color: white;
+            font-size: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .lub-tank {
+            width: 100%;
+            height: 80px;
+            background: rgba(255,255,255,0.9);
+            border: 2px solid #cbd5e1;
+            border-top: none;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* 油量 - 使用渐变黄色表示油量 */
+        .oil-level {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 90%;
+            background: linear-gradient(to top, #fbbf24, var(--oil-color));
+            transition: height 15s linear; /* 缓慢减少油量 */
+            border-radius: 0 0 6px 6px;
+        }
+
+        .lub-nozzle {
+            width: 20px;
+            height: 15px;
+            background: #475569;
+            margin: 0 auto;
+            border-radius: 0 0 4px 4px;
+            position: relative;
+            top: -1px;
+        }
+
+        /* 油管（从润滑器到电机） */
+        .oil-tube {
+            position: absolute;
+            left: 25px; /* 润滑器中心位置 */
+            top: 120px; /* 润滑器底部 */
+            width: 6px;
+            height: 0;
+            background: linear-gradient(to bottom, #94a3b8 0%, #64748b 100%);
+            z-index: 8;
+            border-radius: 3px;
+            opacity: 0;
+            transform-origin: top center;
+        }
+
+        /* 注油流动画 */
+        .oil-flow {
+            position: absolute;
+            left: 25px; /* 润滑器中心位置 */
+            top: 120px; /* 润滑器底部 */
+            width: 6px;
+            height: 0;
+            background: var(--oil-color);
+            opacity: 0;
+            z-index: 9;
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+        }
+        
+        @keyframes flowAnim {
+            0% { height: 0; opacity: 1; }
+            50% { height: 60px; opacity: 1; }
+            100% { height: 60px; opacity: 0; transform: translateY(10px); }
+        }
+        .flowing {
+            animation: flowAnim 1.2s infinite;
+        }
+
+        /* --- 手机界面 --- */
+        .phone {
+            width: 260px;
+            height: 520px;
+            background: var(--phone-bezel);
+            border-radius: 35px;
+            padding: 12px;
+            box-shadow: 20px 20px 50px rgba(0,0,0,0.3);
+            transform: translateX(150%); /* 初始在屏幕外 */
+            transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #f8fafc;
+            border-radius: 25px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .status-bar { height: 20px; background: white; width: 100%; }
+        
+        .app-nav {
+            background: var(--brand-blue);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .app-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
+        .app-subtitle { font-size: 10px; opacity: 0.8; }
+
+        .dashboard {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* 数据卡片 */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .card-info { text-align: right; }
+        .card-label { font-size: 10px; color: #64748b; }
+        .card-value { font-size: 16px; font-weight: bold; color: #0f172a; }
+
+        /* 远程控制按钮 */
+        .control-btn {
+            margin-top: auto;
+            width: 100%;
+            height: 50px;
+            border-radius: 25px;
+            border: none;
+            background: #10b981; /* Green */
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .control-btn.stop-mode {
+            background: #ef4444; /* Red */
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+        }
+
+        /* --- 信号传输动画 --- */
+        .signal-path {
+            position: absolute;
+            top: 40%;
+            left: 30%;
+            width: 40%;
+            height: 2px;
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        .signal-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--brand-blue);
+            border-radius: 50%;
+            top: -3px;
+            opacity: 0;
+            box-shadow: 0 0 10px var(--brand-blue);
+        }
+
+        @keyframes transmitLeft {
+            0% { left: 100%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { left: 0%; opacity: 0; }
+        }
+        @keyframes transmitRight {
+            0% { left: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { left: 100%; opacity: 0; }
+        }
+
+        /* --- 状态类 --- */
+        .lub-installed { top: -10px !important; } /* 安装位置：电机上方 */
+        .tube-extended { height: 60px !important; opacity: 1 !important; } /* 油管延伸 */
+        .phone-visible { transform: translateX(0) !important; }
+        .vibrating { animation: vibrate 0.1s infinite; }
+
+        @keyframes vibrate {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(1px, 1px); }
+            50% { transform: translate(-1px, -1px); }
+            75% { transform: translate(-1px, 1px); }
+            100% { transform: translate(0, 0); }
+        }
+        
+        /* --- 安装动画效果 --- */
+        @keyframes installShake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(1deg); }
+            50% { transform: rotate(-1deg); }
+            75% { transform: rotate(0.5deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        .installing {
+            animation: installShake 0.3s ease-in-out 3;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="stage">
+        <!-- 顶部遮幅 -->
+        <div class="cinema-bar bar-top">
+            <div class="brand-title">蜀利元 <span class="brand-highlight">SHULIYUAN</span></div>
+        </div>
+        
+        <!-- 左侧：设备区 -->
+        <div class="zone-left">
+            <div class="motor-container" id="motor-group">
+                <!-- 润滑器 -->
+                <div class="lubricator" id="lubricator">
+                    <div class="lub-head">蜀利元</div>
+                    <div class="lub-tank">
+                        <div class="oil-level" id="real-oil-level"></div>
+                    </div>
+                    <div class="lub-nozzle"></div>
+                </div>
+                
+                <!-- 油管（从润滑器到电机） -->
+                <div class="oil-tube" id="oil-tube"></div>
+                
+                <!-- 注入的油流 -->
+                <div class="oil-flow" id="oil-flow-anim"></div>
+
+                <!-- 电机本体 -->
+                <div class="motor-base"></div>
+                <div class="motor-shaft-housing"></div>
+                <div class="motor-shaft spinning" id="shaft">
+                    <div class="shaft-line"></div>
+                    <div class="shaft-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 中间：信号层 -->
+        <div class="signal-path" id="signal-layer">
+            <!-- JS会在这里生成信号粒子 -->
+        </div>
+
+        <!-- 右侧：手机区 -->
+        <div class="zone-right">
+            <div class="phone" id="phone-device">
+                <div class="screen">
+                    <div class="status-bar"></div>
+                    <div class="app-nav">
+                        <div class="app-title">智能润滑监控</div>
+                        <div class="app-subtitle">Device ID: SLY-2023-X</div>
+                    </div>
+                    <div class="dashboard">
+                        <!-- 油量卡片 -->
+                        <div class="card">
+                            <div class="card-icon" style="background:#fff7ed; color:orange;">🛢</div>
+                            <div>
+                                <div class="card-label">剩余油量 Oil Level</div>
+                                <div class="card-value" id="disp-oil">100%</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 温度卡片 -->
+                        <div class="card">
+                            <div class="card-icon" style="background:#fef2f2; color:red;">🌡</div>
+                            <div class="card-info">
+                                <div class="card-label">电机温度 Temp</div>
+                                <div class="card-value" id="disp-temp">42.5°C</div>
+                            </div>
+                        </div>
+
+                        <!-- 振动卡片 -->
+                        <div class="card">
+                            <div class="card-icon" style="background:#eff6ff; color:blue;">⚡</div>
+                            <div class="card-info">
+                                <div class="card-label">振动监测 Vib</div>
+                                <div class="card-value" id="disp-vib">2.8 mm/s</div>
+                            </div>
+                        </div>
+
+                        <!-- 注油状态 -->
+                        <div class="card" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                            <div class="card-icon" style="font-size:14px;">⚙️</div>
+                            <div class="card-info">
+                                <div class="card-label">工作状态 Status</div>
+                                <div class="card-value" style="color:green; font-size:14px;" id="disp-status">自动注油中...</div>
+                            </div>
+                        </div>
+
+                        <button class="control-btn" id="btn-control">
+                            <span>●</span> 运行中 RUNNING
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部遮幅与字幕 -->
+        <div class="subtitle-container">
+            <div class="sub-cn" id="txt-cn"></div>
+            <div class="sub-en" id="txt-en"></div>
+        </div>
+        <div class="cinema-bar bar-bottom"></div>
+    </div>
 </body>
 </html>
