@@ -1,0 +1,3670 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#FF6600">
+    <title>智能单点润滑器 - 成都蜀利元机电有限公司</title>
+    <meta name="description" content="成都蜀利元机电有限公司智能单点润滑器产品宣传手册，提供远程控制、定时定量注油的智能润滑解决方案">
+    <meta name="keywords" content="智能润滑器,单点润滑,工业润滑,设备维护,远程控制">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 基础变量和重置 */
+        :root {
+            --primary-orange: #FF6600;
+            --primary-dark: #333333;
+            --primary-light: #F5F5F5;
+            --text-dark: #000000;
+            --text-light: #FFFFFF;
+            --accent-blue: #0066CC;
+            --gray-medium: #666666;
+            --gray-light: #EEEEEE;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-heavy: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --border-radius: 8px;
+            --border-radius-lg: 12px;
+            --transition: all 0.3s ease;
+            --safe-area-inset-top: env(safe-area-inset-top);
+            --safe-area-inset-bottom: env(safe-area-inset-bottom);
+            --safe-area-inset-left: env(safe-area-inset-left);
+            --safe-area-inset-right: env(safe-area-inset-right);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background-color: var(--primary-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding-top: var(--safe-area-inset-top);
+            padding-bottom: var(--safe-area-inset-bottom);
+            min-height: 100vh;
+        }
+
+        /* 移动端防止双击缩放 */
+        .touch-device * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        .touch-device input,
+        .touch-device textarea,
+        .touch-device [contenteditable] {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            user-select: text;
+        }
+
+        /* 加载进度条 */
+        #loading-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #FF6600, #FF3300);
+            z-index: 99999;
+            transition: width 0.3s ease;
+            box-shadow: 0 2px 8px rgba(255, 102, 0, 0.4);
+        }
+
+        /* 网络状态通知 */
+        #network-notification {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #FF9800;
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+            z-index: 9998;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+            font-weight: 500;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        #network-notification.show {
+            transform: translateY(0);
+        }
+
+        #network-notification.success {
+            background: #4CAF50;
+        }
+
+        /* 回到顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-orange);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 990;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.4);
+            border: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:active {
+            transform: scale(0.95);
+        }
+
+        /* 移动端分享按钮 */
+        .share-button {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--accent-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 989;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.4);
+            border: none;
+        }
+
+        .share-button.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .share-button:active {
+            transform: scale(0.95);
+        }
+
+        /* 移动端快速导航菜单 */
+        .quick-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 995;
+            padding: 12px 15px;
+            padding-bottom: max(12px, var(--safe-area-inset-bottom));
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .quick-nav ul {
+            display: flex;
+            justify-content: space-around;
+            list-style: none;
+        }
+
+        .quick-nav li {
+            flex: 1;
+            text-align: center;
+        }
+
+        .quick-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--gray-medium);
+            font-size: 0.75rem;
+            padding: 5px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .quick-nav a i {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .quick-nav a.active,
+        .quick-nav a:active {
+            color: var(--primary-orange);
+            background: rgba(255, 102, 0, 0.1);
+        }
+
+        /* 容器和布局 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 max(20px, var(--safe-area-inset-left)) 0 max(20px, var(--safe-area-inset-right));
+        }
+
+        /* 顶部导航 - 移动端优化 */
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+            transition: var(--transition);
+            padding-top: max(15px, var(--safe-area-inset-top));
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 max(20px, var(--safe-area-inset-left)) 0 max(20px, var(--safe-area-inset-right));
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary-orange);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            color: var(--primary-orange);
+            margin-right: 8px;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--primary-dark);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 5px 0;
+            position: relative;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-orange);
+        }
+
+        .nav-links a.active {
+            color: var(--primary-orange);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-orange);
+            border-radius: 2px;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            width: 44px;
+            height: 44px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-menu-btn:active {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* 主要内容区域 */
+        .main-content {
+            margin-top: 80px;
+            padding-bottom: 60px;
+            padding-left: max(20px, var(--safe-area-inset-left));
+            padding-right: max(20px, var(--safe-area-inset-right));
+            min-height: calc(100vh - 140px);
+        }
+
+        .section {
+            background-color: var(--text-light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            will-change: transform;
+            overflow: hidden;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-orange);
+            flex-wrap: wrap;
+        }
+
+        .section-icon {
+            background-color: var(--primary-orange);
+            color: var(--text-light);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            color: var(--primary-dark);
+            line-height: 1.3;
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            color: var(--gray-medium);
+            margin-top: 5px;
+            width: 100%;
+        }
+
+        /* 封面 */
+        #cover {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect width="1200" height="800" fill="%23333"/><circle cx="200" cy="200" r="50" fill="%23FF6600" opacity="0.3"/><circle cx="1000" cy="600" r="80" fill="%23FF6600" opacity="0.2"/><rect x="400" y="300" width="400" height="200" fill="%230066CC" opacity="0.1"/></svg>');
+            background-size: cover;
+            background-position: center;
+            color: var(--text-light);
+            text-align: center;
+            padding: 60px 20px;
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 0;
+            box-shadow: none;
+            margin-top: 0;
+            position: relative;
+        }
+
+        #cover > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        #cover .section-title {
+            color: var(--text-light);
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #cover .section-subtitle {
+            color: var(--gray-light);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        /* 按钮样式 */
+        .cta-button {
+            background-color: var(--primary-orange);
+            color: var(--text-light);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 25px;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 54px;
+            min-width: 200px;
+            text-decoration: none;
+            touch-action: manipulation;
+        }
+
+        .cta-button:hover {
+            background-color: #e55c00;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 102, 0, 0.4);
+        }
+
+        .cta-button:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .cta-button.secondary {
+            background-color: var(--accent-blue);
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+        }
+
+        .cta-button.secondary:hover {
+            background-color: #0055aa;
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+        }
+
+        /* 解决方案卡片 */
+        .solutions-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .solution-card {
+            background: var(--text-light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            text-align: center;
+            transition: var(--transition);
+            border-top: 4px solid var(--primary-orange);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .solution-icon {
+            background-color: var(--primary-orange);
+            color: var(--text-light);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.6rem;
+        }
+
+        .solution-card h3 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            line-height: 1.3;
+        }
+
+        .solution-card p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        /* 产品卡片 */
+        .product-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .product-card {
+            background: var(--text-light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            text-align: center;
+            transition: var(--transition);
+            border-top: 4px solid var(--primary-orange);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .product-card h3 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            line-height: 1.3;
+        }
+
+        .product-card .product-spec {
+            background-color: var(--primary-light);
+            padding: 12px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* 对比表格 */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+            -webkit-overflow-scrolling: touch;
+            border-radius: var(--border-radius);
+            position: relative;
+        }
+
+        .table-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.9));
+            pointer-events: none;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background-color: var(--primary-orange);
+            color: var(--text-light);
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            position: sticky;
+            left: 0;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid var(--gray-light);
+            font-size: 0.9rem;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background-color: var(--primary-light);
+        }
+
+        .comparison-table tr:hover {
+            background-color: rgba(255, 102, 0, 0.05);
+        }
+
+        /* 功能展示 */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 20px;
+            background-color: var(--primary-light);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .feature-item:hover {
+            background-color: rgba(255, 102, 0, 0.1);
+            transform: translateX(5px);
+        }
+
+        .feature-icon {
+            background-color: var(--primary-orange);
+            color: var(--text-light);
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .feature-content h3 {
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .feature-content p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* 应用场景 */
+        .scenes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .scene-card {
+            background-color: var(--primary-light);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .scene-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .scene-header {
+            background-color: var(--primary-orange);
+            color: var(--text-light);
+            padding: 15px;
+            text-align: center;
+        }
+
+        .scene-body {
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .scene-body ul {
+            list-style-position: inside;
+            margin-top: 10px;
+            padding-left: 0;
+        }
+
+        .scene-body li {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* 案例展示 */
+        .case-studies {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .case-card {
+            background-color: var(--primary-light);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .case-card:hover {
+            background-color: rgba(255, 102, 0, 0.05);
+        }
+
+        .case-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background-color: var(--primary-orange);
+        }
+
+        .case-card h3 {
+            color: var(--primary-orange);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .case-card .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-light);
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            margin-bottom: 10px;
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-orange);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--gray-medium);
+            margin-top: 5px;
+        }
+
+        /* 使用说明 */
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            margin-top: 25px;
+            position: relative;
+        }
+
+        .step {
+            display: flex;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 22px;
+            top: 60px;
+            width: 2px;
+            height: calc(100% + 20px);
+            background-color: var(--gray-light);
+        }
+
+        .step-number {
+            background-color: var(--primary-orange);
+            color: var(--text-light);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-right: 20px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .step-content {
+            flex: 1;
+            padding-top: 5px;
+        }
+
+        .step-content h3 {
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .step-content p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* 正确润滑方法 */
+        .lubrication-method {
+            margin-top: 20px;
+        }
+
+        .method-card {
+            background-color: var(--primary-light);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--primary-orange);
+        }
+
+        .method-card h3 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--primary-orange);
+            padding-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .formula-box {
+            background-color: var(--text-light);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid var(--gray-light);
+            box-shadow: var(--shadow);
+        }
+
+        .formula {
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 10px;
+            background-color: rgba(255, 102, 0, 0.1);
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .example-box {
+            background-color: rgba(0, 170, 0, 0.1);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #00AA00;
+        }
+
+        /* 注油器动画演示iframe样式 */
+        .demo-container {
+            width: 100%;
+            height: 600px;
+            margin: 30px 0;
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-heavy);
+            position: relative;
+            border: 2px solid var(--primary-orange);
+        }
+
+        .demo-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .demo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(255,102,0,0.1), transparent);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .demo-note {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+            font-style: italic;
+        }
+
+        /* 页脚 */
+        .footer {
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            padding: 40px 0 20px;
+            margin-top: 40px;
+            padding-bottom: max(20px, var(--safe-area-inset-bottom));
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            color: var(--text-light);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--primary-orange);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-section ul li a {
+            color: var(--gray-light);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--primary-orange);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray-light);
+            font-size: 0.8rem;
+        }
+
+        /* 打印样式优化 */
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            body {
+                font-size: 11pt !important;
+                line-height: 1.4 !important;
+                color: #000 !important;
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            .navbar, .footer, .cta-button, .mobile-menu-btn,
+            .nav-links, .back-to-top, .share-button, .quick-nav,
+            #loading-bar, #network-notification {
+                display: none !important;
+            }
+            
+            .main-content {
+                margin-top: 0 !important;
+                padding-top: 0 !important;
+            }
+            
+            .section {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+                margin: 15px 0 !important;
+                padding: 20px !important;
+                break-inside: avoid;
+                page-break-inside: avoid;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            
+            #cover {
+                background: white !important;
+                color: black !important;
+                padding: 50px 20px !important;
+                min-height: auto !important;
+                text-align: center;
+                border: 2px solid #FF6600 !important;
+            }
+            
+            #cover .section-title {
+                color: #FF6600 !important;
+                font-size: 28pt !important;
+            }
+            
+            #cover .section-subtitle {
+                color: #666 !important;
+                font-size: 14pt !important;
+            }
+            
+            .section-header {
+                background: linear-gradient(to right, #FF6600, white) !important;
+                -webkit-print-color-adjust: exact;
+                padding: 10px 15px !important;
+                margin: -20px -20px 20px -20px !important;
+                border-bottom: 2px solid #FF6600 !important;
+            }
+            
+            .section-icon {
+                background-color: #FF6600 !important;
+                -webkit-print-color-adjust: exact;
+                color: white !important;
+            }
+            
+            .product-card, .feature-item, .scene-card, .case-card, .solution-card {
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            
+            .comparison-table {
+                border: 1px solid #000 !important;
+            }
+            
+            .comparison-table th {
+                background-color: #FF6600 !important;
+                -webkit-print-color-adjust: exact;
+                color: white !important;
+                border: 1px solid #000 !important;
+            }
+            
+            .comparison-table td {
+                border: 1px solid #000 !important;
+            }
+            
+            .stat-value {
+                color: #FF6600 !important;
+            }
+            
+            .scene-header {
+                background-color: #FF6600 !important;
+                -webkit-print-color-adjust: exact;
+                color: white !important;
+            }
+            
+            .step-number {
+                background-color: #FF6600 !important;
+                -webkit-print-color-adjust: exact;
+                color: white !important;
+            }
+            
+            .feature-icon, .solution-icon {
+                background-color: #FF6600 !important;
+                -webkit-print-color-adjust: exact;
+                color: white !important;
+            }
+            
+            a {
+                color: #000 !important;
+                text-decoration: none !important;
+            }
+            
+            .steps-container, .solutions-container {
+                break-inside: avoid;
+            }
+            
+            .footer-section h3::after {
+                background-color: #FF6600 !important;
+            }
+            
+            /* 添加页眉页脚 */
+            @page {
+                margin: 20mm;
+                @top-center {
+                    content: "智能单点润滑器 - 成都蜀利元机电有限公司";
+                    font-size: 10pt;
+                    color: #666;
+                }
+                @bottom-center {
+                    content: "第 " counter(page) " 页";
+                    font-size: 10pt;
+                    color: #666;
+                }
+            }
+            
+            h1, h2, h3, h4 {
+                page-break-after: avoid;
+            }
+            
+            ul, ol, img {
+                page-break-inside: avoid;
+            }
+            
+            /* 隐藏不必要的动画 */
+            [class*="animation"], [class*="pulse"] {
+                animation: none !important;
+            }
+
+            /* 隐藏演示容器 */
+            .demo-container {
+                display: none !important;
+            }
+        }
+
+        /* 触摸设备优化 */
+        @media (hover: none) and (pointer: coarse) {
+            .feature-item:hover,
+            .solution-card:hover,
+            .product-card:hover,
+            .scene-card:hover,
+            .case-card:hover {
+                transform: none;
+            }
+            
+            .feature-item:active,
+            .solution-card:active,
+            .product-card:active,
+            .scene-card:active,
+            .case-card:active {
+                transform: scale(0.98);
+            }
+            
+            .cta-button:active {
+                transform: scale(0.98);
+            }
+            
+            /* 移动端触摸滚动优化 */
+            .table-container {
+                scroll-behavior: smooth;
+            }
+        }
+
+        /* 防止iOS缩放 */
+        input,
+        textarea,
+        select,
+        button {
+            font-size: 16px;
+        }
+
+        /* 改善移动端滚动体验 */
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+
+        /* 移动端字体优化 */
+        body {
+            -webkit-text-size-adjust: none;
+            text-size-adjust: none;
+        }
+
+        /* 响应式设计 - 平板 */
+        @media (max-width: 1024px) {
+            .section {
+                padding: 25px;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            #cover .section-title {
+                font-size: 2rem;
+            }
+            
+            #cover .section-subtitle {
+                font-size: 1rem;
+            }
+            
+            .nav-links a {
+                font-size: 0.85rem;
+            }
+
+            .demo-container {
+                height: 500px;
+            }
+        }
+
+        /* 响应式设计 - 小屏幕平板和大屏手机 */
+        @media (max-width: 900px) {
+            .nav-links li {
+                margin-left: 15px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .solutions-container,
+            .product-cards,
+            .features-grid,
+            .scenes-container,
+            .case-studies {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+            
+            .quick-nav {
+                display: block;
+            }
+
+            .demo-container {
+                height: 450px;
+            }
+        }
+
+        /* 响应式设计 - 平板和手机 */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background-color: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: 80px 20px 40px;
+                box-shadow: var(--shadow);
+                transform: translateX(-100%);
+                opacity: 0;
+                transition: transform 0.3s ease, opacity 0.3s ease;
+                z-index: 999;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .nav-links.active {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            
+            .nav-links li {
+                margin: 10px 0;
+                width: 100%;
+            }
+            
+            .nav-links a {
+                display: block;
+                padding: 12px 15px;
+                border-radius: var(--border-radius);
+                font-size: 1rem;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            }
+            
+            .nav-links a.active {
+                background-color: rgba(255, 102, 0, 0.1);
+            }
+            
+            .nav-links a.active::after {
+                display: none;
+            }
+            
+            .section {
+                padding: 20px 15px;
+                margin-bottom: 20px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .section-icon {
+                margin-bottom: 15px;
+                margin-right: 0;
+            }
+            
+            .section-title {
+                font-size: 1.4rem;
+            }
+            
+            .section-subtitle {
+                font-size: 0.95rem;
+            }
+            
+            #cover {
+                padding: 40px 15px;
+                min-height: 70vh;
+            }
+            
+            #cover .section-title {
+                font-size: 1.8rem;
+            }
+            
+            #cover .section-subtitle {
+                font-size: 0.95rem;
+            }
+            
+            .cta-button {
+                padding: 14px 28px;
+                font-size: 1rem;
+                max-width: 100%;
+                min-width: auto;
+            }
+            
+            .solutions-container,
+            .product-cards,
+            .features-grid,
+            .scenes-container,
+            .case-studies {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .feature-item {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .feature-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .step {
+                flex-direction: column;
+            }
+            
+            .step-number {
+                margin-bottom: 15px;
+                margin-right: 0;
+            }
+            
+            .step:not(:last-child)::after {
+                left: 22px;
+                top: 45px;
+                height: calc(100% + 20px);
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .footer-section {
+                margin-bottom: 20px;
+            }
+            
+            .back-to-top,
+            .share-button {
+                bottom: 80px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+            
+            .share-button {
+                bottom: 140px;
+            }
+            
+            .quick-nav {
+                display: block;
+            }
+
+            .demo-container {
+                height: 400px;
+            }
+        }
+
+        /* 响应式设计 - 手机 */
+        @media (max-width: 480px) {
+            .main-content {
+                margin-top: 70px;
+            }
+            
+            .section {
+                padding: 15px;
+                border-radius: var(--border-radius-lg);
+            }
+            
+            .section-header {
+                margin-bottom: 20px;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+            
+            .section-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            #cover {
+                padding: 30px 15px;
+            }
+            
+            #cover .section-title {
+                font-size: 1.6rem;
+            }
+            
+            #cover .section-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .solution-card,
+            .product-card,
+            .feature-item,
+            .scene-card,
+            .case-card {
+                padding: 20px;
+            }
+            
+            .solution-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.4rem;
+            }
+            
+            .solution-card h3,
+            .product-card h3,
+            .feature-content h3,
+            .scene-header h3,
+            .case-card h3 {
+                font-size: 1.2rem;
+            }
+            
+            .comparison-table th,
+            .comparison-table td {
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+            
+            .stat-value {
+                font-size: 1.4rem;
+            }
+            
+            .stat-label {
+                font-size: 0.8rem;
+            }
+            
+            .method-card {
+                padding: 20px;
+            }
+            
+            .method-card h3 {
+                font-size: 1.2rem;
+            }
+            
+            .formula {
+                font-size: 1rem;
+            }
+            
+            .quick-nav a i {
+                font-size: 1rem;
+            }
+            
+            .quick-nav a span {
+                font-size: 0.7rem;
+            }
+
+            .demo-container {
+                height: 350px;
+            }
+        }
+
+        /* 超小屏幕手机 */
+        @media (max-width: 360px) {
+            .section-title {
+                font-size: 1.2rem;
+            }
+            
+            #cover .section-title {
+                font-size: 1.4rem;
+            }
+            
+            .section-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1.1rem;
+            }
+            
+            .solution-card h3,
+            .product-card h3,
+            .feature-content h3,
+            .scene-header h3,
+            .case-card h3 {
+                font-size: 1.1rem;
+            }
+            
+            .solution-card p,
+            .product-card p,
+            .feature-content p,
+            .scene-body p,
+            .case-card p {
+                font-size: 0.9rem;
+            }
+            
+            .back-to-top,
+            .share-button {
+                bottom: 70px;
+                right: 12px;
+                width: 42px;
+                height: 42px;
+            }
+            
+            .share-button {
+                bottom: 125px;
+            }
+
+            .demo-container {
+                height: 300px;
+            }
+      /* 注油器动画演示iframe样式 */
+.demo-container {
+    width: 100%;
+    height: 600px;
+    margin: 30px 0;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-heavy);
+    position: relative;
+    border: 2px solid var(--primary-orange);
+}
+
+.demo-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+.demo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(255,102,0,0.1), transparent);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.demo-note {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: var(--gray-medium);
+    font-style: italic;
+}
+
+/* 响应式调整 */
+@media (max-width: 1024px) {
+    .demo-container {
+        height: 500px;
+    }
+}
+
+@media (max-width: 900px) {
+    .demo-container {
+        height: 450px;
+    }
+}
+
+@media (max-width: 768px) {
+    .demo-container {
+        height: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .demo-container {
+        height: 350px;
+    }
+}
+
+@media (max-width: 360px) {
+    .demo-container {
+        height: 300px;
+    }
+}
+
+/* 打印时隐藏演示容器 */
+@media print {
+    .demo-container {
+        display: none !important;
+    }
+}  }
+    </style>
+</head>
+<body>
+    <!-- 加载进度条 -->
+    <div id="loading-bar"></div>
+    
+    <!-- 网络状态通知 -->
+    <div id="network-notification"></div>
+    
+    <!-- 回到顶部按钮 -->
+    <button class="back-to-top" id="backToTop" aria-label="回到顶部">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+    
+    <!-- 分享按钮 -->
+    <button class="share-button" id="shareButton" aria-label="分享页面">
+        <i class="fas fa-share-alt"></i>
+    </button>
+    
+    <!-- 移动端快速导航 -->
+    <nav class="quick-nav" id="quickNav">
+        <ul>
+            <li>
+                <a href="#cover" class="active">
+                    <i class="fas fa-home"></i>
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="#products">
+                    <i class="fas fa-cogs"></i>
+                    <span>产品</span>
+                </a>
+            </li>
+            <li>
+                <a href="#features">
+                    <i class="fas fa-star"></i>
+                    <span>功能</span>
+                </a>
+            </li>
+            <li>
+                <a href="#cases">
+                    <i class="fas fa-chart-line"></i>
+                    <span>案例</span>
+                </a>
+            </li>
+            <li>
+                <a href="#contact">
+                    <i class="fas fa-phone"></i>
+                    <span>联系</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#cover" class="logo">
+                <i class="fas fa-oil-can logo-icon"></i>
+                <span>蜀利元</span>
+            </a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="打开导航菜单" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#cover" class="active">首页</a></li>
+                <li><a href="#about">公司简介</a></li>
+                <li><a href="#painpoints">行业痛点</a></li>
+                <li><a href="#comparison">智能润滑系统</a></li>
+                <li><a href="#lubrication">正确润滑方法</a></li>
+                <li><a href="#solutions">产品解决方案</a></li>
+                <li><a href="#products">产品中心</a></li>
+                <li><a href="#features">核心功能</a></li>
+                <li><a href="#applications">应用场景</a></li>
+                <li><a href="#cases">客户案例</a></li>
+                <li><a href="#contact">联系我们</a></li>
+                <li><a href="javascript:window.print()" style="color: var(--primary-orange);">
+                    <i class="fas fa-print"></i> 打印PDF
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <div class="main-content">
+        <!-- 封面 -->
+        <section id="cover" class="section">
+            <h1 class="section-title">智能单点润滑器</h1>
+            <p class="section-subtitle">Intelligent Single-Point Lubricator System</p>
+            <p style="max-width: 800px; margin: 0 auto 30px; font-size: 1.1rem; line-height: 1.6;">
+                成都蜀利元机电有限公司自主研发的智能润滑解决方案，实现远程控制、定时定量注油，替代传统人工润滑方式，为工业设备提供精准、高效、安全的智能润滑服务。
+            </p>
+            <button class="cta-button" onclick="printDocument()">
+                <i class="fas fa-print"></i> 打印宣传手册
+            </button>
+            <button class="cta-button secondary" onclick="scrollToSection('contact')" style="margin-left: 15px;">
+                <i class="fas fa-phone"></i> 联系我们
+            </button>
+            <div style="margin-top: 30px; font-size: 0.85rem; color: var(--gray-light);">
+                <p>宣传手册 | 2025年12月版 | 成都蜀利元机电有限公司</p>
+                <p id="current-time"></p>
+            </div>
+        </section>
+
+        <!-- 公司简介 -->
+        <section id="about" class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div>
+                    <h2 class="section-title">公司简介</h2>
+                    <p class="section-subtitle">About Us</p>
+                </div>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center;">
+                <div style="flex: 1; min-width: 280px;">
+                    <p style="margin-bottom: 20px; font-size: 1rem; line-height: 1.6;">
+                        <strong>成都蜀利元机电有限公司</strong>成立于2015年，是一家专注于工业智能润滑系统研发与制造的高新技术企业。公司拥有多项专利技术，致力于为客户提供高效、可靠、智能的润滑解决方案。
+                    </p>
+                    <div style="background-color: var(--primary-light); padding: 15px; border-radius: var(--border-radius); margin-top: 15px;">
+                        <h3 style="color: var(--primary-orange); margin-bottom: 12px; border-left: 4px solid var(--primary-orange); padding-left: 10px; font-size: 1.2rem;">我们的使命</h3>
+                        <p style="margin-left: 14px; font-size: 0.95rem;">让工业设备润滑更智能、更高效、更安全</p>
+                        <h3 style="color: var(--primary-orange); margin-bottom: 12px; margin-top: 15px; border-left: 4px solid var(--primary-orange); padding-left: 10px; font-size: 1.2rem;">我们的愿景</h3>
+                        <p style="margin-left: 14px; font-size: 0.95rem;">成为工业智能润滑领域领先品牌</p>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 280px; text-align: center;">
+                    <div style="background-color: var(--primary-light); padding: 15px; border-radius: var(--border-radius);">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                            <div style="background-color: var(--text-light); padding: 12px; border-radius: var(--border-radius); border: 1px solid var(--gray-light);">
+                                <div style="font-size: 1.6rem; font-weight: 700; color: var(--primary-orange);">8+</div>
+                                <div style="font-weight: 500; font-size: 0.9rem;">年行业经验</div>
+                            </div>
+                            <div style="background-color: var(--text-light); padding: 12px; border-radius: var(--border-radius); border: 1px solid var(--gray-light);">
+                                <div style="font-size: 1.6rem; font-weight: 700; color: var(--primary-orange);">500+</div>
+                                <div style="font-weight: 500; font-size: 0.9rem;">服务客户</div>
+                            </div>
+                            <div style="background-color: var(--text-light); padding: 12px; border-radius: var(--border-radius); border: 1px solid var(--gray-light);">
+                                <div style="font-size: 1.6rem; font-weight: 700; color: var(--primary-orange);">50+</div>
+                                <div style="font-weight: 500; font-size: 0.9rem;">专利技术</div>
+                            </div>
+                            <div style="background-color: var(--text-light); padding: 12px; border-radius: var(--border-radius); border: 1px solid var(--gray-light);">
+                                <div style="font-size: 1.6rem; font-weight: 700; color: var(--primary-orange);">10000+</div>
+                                <div style="font-weight: 500; font-size: 0.9rem;">设备安装</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 行业痛点分析 -->
+        <section id="painpoints" class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div>
+                    <h2 class="section-title">行业痛点分析</h2>
+                    <p class="section-subtitle">Pain Points</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 25px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <!-- 人工润滑问题 -->
+                    <div style="background-color: var(--primary-light); border-radius: var(--border-radius); padding: 20px; border-left: 4px solid #FF6600;">
+                        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <div style="background-color: #FF6600; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 1.3rem;">
+                                <i class="fas fa-user-cog"></i>
+                            </div>
+                            <h3 style="color: var(--primary-dark); margin: 0; font-size: 1.2rem;">人工润滑问题</h3>
+                        </div>
+                        <ul style="list-style-type: none; padding-left: 0;">
+                            <li style="margin-bottom: 10px; padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                <i class="fas fa-times" style="color: #FF3333; position: absolute; left: 0; top: 4px;"></i>
+                                <strong>油脂用量难控制</strong> - 过多导致过热起火，过少导致摩擦增大
+                            </li>
+                            <li style="margin-bottom: 10px; padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                <i class="fas fa-times" style="color: #FF3333; position: absolute; left: 0; top: 4px;"></i>
+                                <strong>润滑周期不准确</strong> - 依赖人工记忆，易错过最佳润滑时机
+                            </li>
+                            <li style="margin-bottom: 10px; padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                <i class="fas fa-times" style="color: #FF3333; position: absolute; left: 0; top: 4px;"></i>
+                                <strong>高空/危险作业风险</strong> - 攀爬、受限空间等高风险环境作业
+                            </li>
+                            <li style="padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                <i class="fas fa-times" style="color: #FF3333; position: absolute; left: 0; top: 4px;"></i>
+                                <strong>需停机维护</strong> - 影响生产效率，增加停产损失
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 环境挑战 -->
+                    <div style="background-color: var(--primary-light); border-radius: var(--border-radius); padding: 20px; border-left: 4px solid #FF6600;">
+                        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <div style="background-color: #FF6600; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 1.3rem;">
+                                <i class="fas fa-industry"></i>
+                            </div>
+                            <h3 style="color: var(--primary-dark); margin: 0; font-size: 1.2rem;">环境挑战</h3>
+                        </div>
+                        <ul style="list-style-type: none; padding-left: 0;">
+                            <li style="margin-bottom: 10px; padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                <i class="fas fa-times" style="color: #FF3333; position: absolute; left: 0; top: 4px;"></i>
+                                <strong>粉尘、潮湿、腐蚀</strong> - 恶劣环境加速设备磨损，影响润滑效果
+                            </li>
+                            <li style="margin-bottom: 10px; padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                <i class="fas fa-times" style="color: #FF3333; position: absolute; left: 0; top: 4px;"></i>
+                                <strong>高温/低温极端工况</strong> - 影响润滑油脂性能，增加设备故障率
+                            </li>
+                            <li style="padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                <i class="fas fa-times" style="color: #FF3333; position: absolute; left: 0; top: 4px;"></i>
+                                <strong>强振动运行条件</strong> - 导致润滑系统松动，润滑剂泄漏
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 管理难题 -->
+                    <div style="background-color: var(--primary-light); border-radius: var(--border-radius); padding: 20px; border-left: 4px solid #FF6600;">
+                        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <div style="background-color: #FF6600; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 1.3rem;">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <h3 style="color: var(--primary-dark); margin: 0; font-size: 1.2rem;">管理难题</h3>
+                        </div>
+                        <ul style="list-style-type: none; padding-left: 0;">
+                            <li style="margin-bottom: 10px; padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                <i class="fas fa-times" style="color: #FF3333; position: absolute; left: 0; top: 4px;"></i>
+                                <strong>润滑记录不完整</strong> - 纸质记录易丢失，数据难以追溯分析
+                            </li>
+                            <li style="margin-bottom: 10px; padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                <i class="fas fa-times" style="color: #FF3333; position: absolute; left: 0; top: 4px;"></i>
+                                <strong>故障预警不及时</strong> - 缺乏实时监控，无法提前预防故障
+                            </li>
+                            <li style="padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                <i class="fas fa-times" style="color: #FF3333; position: absolute; left: 0; top: 4px;"></i>
+                                <strong>维护成本高昂</strong> - 人工成本+停机损失+意外维修费用
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; padding: 20px; background-color: rgba(255, 102, 0, 0.1); border-radius: var(--border-radius); border-left: 4px solid var(--primary-orange);">
+                    <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                        <div style="background-color: var(--primary-orange); color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 1.3rem;">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3 style="color: var(--primary-orange); margin: 0; font-size: 1.2rem;">我们的解决方案</h3>
+                    </div>
+                    <p style="margin-left: 57px; font-size: 1rem; line-height: 1.6;">
+                        针对以上行业痛点，成都蜀利元机电有限公司推出<strong>智能单点润滑器</strong>，通过远程控制、定时定量润滑、实时监控等技术，彻底解决传统润滑方式的各种难题，实现设备润滑的智能化、自动化管理。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 智能润滑系统对比 -->
+        <section id="comparison" class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <div>
+                    <h2 class="section-title">智能润滑系统对比</h2>
+                    <p class="section-subtitle">Smart Lubrication System Comparison</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 25px;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h3 style="color: var(--primary-orange); font-size: 1.4rem; margin-bottom: 10px; line-height: 1.3;">分布式润滑系统 vs 人工手动润滑</h3>
+                    <p style="color: var(--gray-medium); max-width: 800px; margin: 0 auto; font-size: 0.95rem; line-height: 1.5;">智能润滑系统与人工润滑的全面对比，展示技术创新带来的显著优势</p>
+                </div>
+                
+                <!-- 对比图表 -->
+                <div style="background-color: var(--primary-light); padding: 20px; border-radius: var(--border-radius); margin-bottom: 30px; border-left: 4px solid var(--primary-orange);">
+                    <h4 style="color: var(--primary-dark); margin-bottom: 15px; text-align: center; font-size: 1.2rem;">润滑效果随时间变化对比</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+                        <div style="flex: 1; min-width: 280px;">
+                            <div style="background-color: var(--text-light); padding: 15px; border-radius: var(--border-radius); border: 2px solid #FF3333; height: 100%;">
+                                <h5 style="color: #FF3333; text-align: center; margin-bottom: 12px; font-size: 1.1rem;"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i>人工手动润滑问题</h5>
+                                <ul style="list-style-type: none; padding-left: 0;">
+                                    <li style="margin-bottom: 8px; padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                        <i class="fas fa-times" style="color: #FF3333; position: absolute; left: 0; top: 4px;"></i>
+                                        <strong>过度润滑</strong> - 油脂过量导致过热、起火风险
+                                    </li>
+                                    <li style="margin-bottom: 8px; padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                        <i class="fas fa-times" style="color: #FF3333; position: absolute; left: 0; top: 4px;"></i>
+                                        <strong>润滑不足</strong> - 摩擦增大，加速设备磨损
+                                    </li>
+                                    <li style="margin-bottom: 8px; padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                        <i class="fas fa-times" style="color: #FF3333; position: absolute; left: 0; top: 4px;"></i>
+                                        <strong>高温，跑冒滴漏</strong> - 润滑剂泄漏，环境污染
+                                    </li>
+                                    <li style="margin-bottom: 8px; padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                        <i class="fas fa-times" style="color: #FF3333; position: absolute; left: 0; top: 4px;"></i>
+                                        <strong>磨损，意外停机</strong> - 设备故障率增加，生产中断
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div style="flex: 1; min-width: 280px;">
+                            <div style="background-color: var(--text-light); padding: 15px; border-radius: var(--border-radius); border: 2px solid #00AA00; height: 100%;">
+                                <h5 style="color: #00AA00; text-align: center; margin-bottom: 12px; font-size: 1.1rem;"><i class="fas fa-check-circle" style="margin-right: 8px;"></i>分布式润滑系统优势</h5>
+                                <ul style="list-style-type: none; padding-left: 0;">
+                                    <li style="margin-bottom: 8px; padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                        <i class="fas fa-check" style="color: #00AA00; position: absolute; left: 0; top: 4px;"></i>
+                                        <strong>稳定持续供油</strong> - 保持最佳润滑状态
+                                    </li>
+                                    <li style="margin-bottom: 8px; padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                        <i class="fas fa-check" style="color: #00AA00; position: absolute; left: 0; top: 4px;"></i>
+                                        <strong>精准定量控制</strong> - 避免过多或过少润滑
+                                    </li>
+                                    <li style="margin-bottom: 8px; padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                        <i class="fas fa-check" style="color: #00AA00; position: absolute; left: 0; top: 4px;"></i>
+                                        <strong>温度稳定</strong> - 设备运行温度保持在合理范围
+                                    </li>
+                                    <li style="margin-bottom: 8px; padding-left: 22px; position: relative; font-size: 0.95rem; line-height: 1.5;">
+                                        <i class="fas fa-check" style="color: #00AA00; position: absolute; left: 0; top: 4px;"></i>
+                                        <strong>零意外停机</strong> - 保障生产连续性
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--gray-light);">
+                        <p style="color: var(--gray-medium); font-style: italic; font-size: 0.9rem;">分布式润滑系统提供持续稳定的润滑性能，消除人工润滑的不确定性和波动性</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 正确润滑方法 -->
+        <section id="lubrication" class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-oil-can"></i>
+                </div>
+                <div>
+                    <h2 class="section-title">正确润滑方法</h2>
+                    <p class="section-subtitle">Proper Lubrication Methods</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 25px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <!-- 轴承初次润滑 -->
+                    <div class="method-card">
+                        <h3><i class="fas fa-cog" style="margin-right: 8px; color: var(--primary-orange);"></i>轴承初次润滑</h3>
+                        <p style="margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6;">正确的初次润滑是确保轴承正常运行和延长使用寿命的关键步骤。根据轴承类型和安装位置，润滑脂填充量有所不同：</p>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                                <div style="background-color: var(--primary-orange); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 1.1rem;">
+                                    <i class="fas fa-industry"></i>
+                                </div>
+                                <h4 style="color: var(--primary-dark); margin: 0; font-size: 1.1rem;">开式轴承</h4>
+                            </div>
+                            <p style="margin-left: 47px; padding: 12px; background-color: var(--text-light); border-radius: var(--border-radius); border-left: 3px solid var(--primary-orange); font-size: 0.95rem;">
+                                <strong>润滑脂填充量：100%</strong><br>
+                                开式轴承需要完全填充润滑脂，确保所有滚动体和滚道表面都得到充分润滑。
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                                <div style="background-color: var(--primary-orange); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 1.1rem;">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <h4 style="color: var(--primary-dark); margin: 0; font-size: 1.1rem;">轴承座</h4>
+                            </div>
+                            <div style="margin-left: 47px;">
+                                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                                    <div style="flex: 1; min-width: 150px; background-color: var(--text-light); padding: 12px; border-radius: var(--border-radius); border: 1px solid var(--gray-light);">
+                                        <div style="color: var(--primary-orange); font-weight: 600; margin-bottom: 6px; font-size: 0.9rem;">两侧位置填充</div>
+                                        <div style="font-size: 1.3rem; font-weight: 700; color: var(--primary-orange);">40%</div>
+                                        <div style="font-size: 0.85rem; color: var(--gray-medium);">填充轴承座空间的40%</div>
+                                    </div>
+                                    <div style="flex: 1; min-width: 150px; background-color: var(--text-light); padding: 12px; border-radius: var(--border-radius); border: 1px solid var(--gray-light);">
+                                        <div style="color: var(--primary-orange); font-weight: 600; margin-bottom: 6px; font-size: 0.9rem;">外圈位置填充</div>
+                                        <div style="font-size: 1.3rem; font-weight: 700; color: var(--primary-orange);">20%</div>
+                                        <div style="font-size: 0.85rem; color: var(--gray-medium);">填充轴承座空间的20%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 轴承二次润滑 -->
+                    <div class="method-card">
+                        <h3><i class="fas fa-sync-alt" style="margin-right: 8px; color: var(--primary-orange);"></i>轴承二次润滑</h3>
+                        <p style="margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6;">定期补充润滑脂是维持轴承正常运行的必要措施。润滑脂补充量计算公式如下：</p>
+                        
+                        <div class="formula-box">
+                            <h4 style="color: var(--primary-dark); margin-bottom: 12px; text-align: center; font-size: 1.1rem;">润滑脂补充量计算公式</h4>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                    <div style="background-color: #FF6600; color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 8px; font-size: 0.9rem;">
+                                        A
+                                    </div>
+                                    <span><strong>两侧位置填充时：</strong></span>
+                                </div>
+                                <div class="formula">
+                                    G<sub>p</sub> = 0.005 × D × B
+                                </div>
+                                <p style="text-align: center; font-size: 0.85rem; color: var(--gray-medium);">
+                                    其中：D = 轴承外径 (mm)，B = 轴承宽度 (mm)
+                                </p>
+                            </div>
+                            
+                            <div>
+                                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                    <div style="background-color: #FF6600; color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 8px; font-size: 0.9rem;">
+                                        B
+                                    </div>
+                                    <span><strong>内圈或外圈位置填充时：</strong></span>
+                                </div>
+                                <div class="formula">
+                                    G<sub>p</sub> = 0.002 × D × B
+                                </div>
+                                <p style="text-align: center; font-size: 0.85rem; color: var(--gray-medium);">
+                                    其中：D = 轴承外径 (mm)，B = 轴承宽度 (mm)
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="example-box">
+                            <h4 style="color: #00AA00; margin-bottom: 12px; font-size: 1.1rem;"><i class="fas fa-calculator" style="margin-right: 8px;"></i>计算实例：6330 C3轴承</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 15px;">
+                                <div style="text-align: center; padding: 8px; background-color: white; border-radius: var(--border-radius);">
+                                    <div style="font-weight: 600; color: var(--gray-medium); font-size: 0.85rem;">轴承型号</div>
+                                    <div style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark);">6330 C3</div>
+                                </div>
+                                <div style="text-align: center; padding: 8px; background-color: white; border-radius: var(--border-radius);">
+                                    <div style="font-weight: 600; color: var(--gray-medium); font-size: 0.85rem;">外径 (D)</div>
+                                    <div style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark);">225 mm</div>
+                                </div>
+                                <div style="text-align: center; padding: 8px; background-color: white; border-radius: var(--border-radius);">
+                                    <div style="font-weight: 600; color: var(--gray-medium); font-size: 0.85rem;">宽度 (B)</div>
+                                    <div style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark);">35 mm</div>
+                                </div>
+                            </div>
+                            
+                            <div style="background-color: white; padding: 12px; border-radius: var(--border-radius); margin-bottom: 12px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap;">
+                                    <span style="font-size: 0.9rem;"><strong>单次补充量计算：</strong></span>
+                                    <span style="font-weight: 700; color: var(--primary-orange); font-size: 0.95rem;">G<sub>p</sub> = 225 × 35 × 0.005 = 39g</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                                    <span style="font-size: 0.9rem;"><strong>润滑间隔2个月（约60天）：</strong></span>
+                                    <span style="font-weight: 700; color: #00AA00; font-size: 0.95rem;">日均加脂量 = 39g ÷ 60 ≈ 0.65g</span>
+                                </div>
+                            </div>
+                            
+                            <p style="font-size: 0.85rem; color: var(--gray-medium); margin-top: 12px;">
+                                <i class="fas fa-lightbulb" style="color: #00AA00; margin-right: 6px;"></i>
+                                此计算实例展示了如何确定轴承的精确润滑需求，为智能润滑器的参数设置提供科学依据。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 产品解决方案 -->
+        <section id="solutions" class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <div>
+                    <h2 class="section-title">产品解决方案</h2>
+                    <p class="section-subtitle">Product Solution</p>
+                </div>
+            </div>
+            
+            <p style="margin-bottom: 25px; font-size: 1rem; line-height: 1.6;">
+                基于工业物联网技术，我们提供全面的智能润滑解决方案，实现设备润滑的数字化、智能化管理。通过手机小程序和PC管理平台，实现对润滑设备的远程控制、集中管理和实时监测，大幅提升设备运行可靠性，降低运维成本。
+            </p>
+            
+            <div class="solutions-container">
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>远程智能控制</h3>
+                    <p>支持手机小程序和PC端管理平台，随时随地远程操控设备，实现真正的移动办公。</p>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <h3>多设备集中管理</h3>
+                    <p>一键管理数百台运行设备，统一配置、集中监控，大幅降低运维成本和管理复杂度。</p>
+                </div>
+                
+                <div class="solution-card">
+                    <div class="solution-icon">
+                        <i class="fas fa-satellite"></i>
+                    </div>
+                    <h3>远程巡回监测</h3>
+                    <p>在设备巡回检查过程中，实时监控设备运行状态，及时发现异常情况。</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 40px; padding-top: 25px; border-top: 2px solid var(--gray-light);">
+                <h3 style="color: var(--primary-orange); margin-bottom: 20px; text-align: center; font-size: 1.4rem;">
+                    <i class="fas fa-cogs" style="margin-right: 8px;"></i>智能设备核心功能
+                </h3>
+                
+                <div class="solutions-container">
+                    <div class="solution-card">
+                        <div class="solution-icon" style="background-color: #0066CC;">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <h3>定时定量注油</h3>
+                        <p>精准控制注油量与润滑周期，避免油脂浪费和设备干磨，实现精准润滑。</p>
+                    </div>
+                    
+                    <div class="solution-card">
+                        <div class="solution-icon" style="background-color: #0066CC;">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3>实时状态监控</h3>
+                        <p>实时监测油量、电量、压力等关键参数，设备状态一目了然，及时响应异常。</p>
+                    </div>
+                    
+                    <div class="solution-card">
+                        <div class="solution-icon" style="background-color: #0066CC;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h3>远程故障监测</h3>
+                        <p>集成多类型传感器，实时监测设备故障，异常情况及时预警，防患于未然。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 35px; padding: 20px; background-color: rgba(255, 102, 0, 0.1); border-radius: var(--border-radius); border-left: 4px solid var(--primary-orange);">
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                    <div style="background-color: var(--primary-orange); color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 1.3rem;">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 style="color: var(--primary-orange); margin: 0; font-size: 1.2rem;">解决方案价值</h3>
+                </div>
+                <div style="margin-left: 57px;">
+                    <p style="margin-bottom: 15px; font-size: 1rem; line-height: 1.6;">
+                        我们的智能润滑解决方案将传统人工润滑方式转变为自动化、智能化的管理模式，为客户带来显著的效益提升：
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 15px;">
+                        <div style="text-align: center; padding: 12px; background-color: var(--text-light); border-radius: var(--border-radius); border: 1px solid var(--gray-light);">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); margin-bottom: 6px;">30-50%</div>
+                            <div style="font-weight: 500; font-size: 0.9rem;">运维成本降低</div>
+                        </div>
+                        <div style="text-align: center; padding: 12px; background-color: var(--text-light); border-radius: var(--border-radius); border: 1px solid var(--gray-light);">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); margin-bottom: 6px;">40-60%</div>
+                            <div style="font-weight: 500; font-size: 0.9rem;">设备故障率减少</div>
+                        </div>
+                        <div style="text-align: center; padding: 12px; background-color: var(--text-light); border-radius: var(--border-radius); border: 1px solid var(--gray-light);">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); margin-bottom: 6px;">70-80%</div>
+                            <div style="font-weight: 500; font-size: 0.9rem;">人工维护时间节约</div>
+                        </div>
+                        <div style="text-align: center; padding: 12px; background-color: var(--text-light); border-radius: var(--border-radius); border: 1px solid var(--gray-light);">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-orange); margin-bottom: 6px;">24/7</div>
+                            <div style="font-weight: 500; font-size: 0.9rem;">全天候监控保障</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 产品中心 -->
+        <section id="products" class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div>
+                    <h2 class="section-title">产品中心</h2>
+                    <p class="section-subtitle">Product Center</p>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: var(--primary-dark); margin-bottom: 15px; font-size: 1.3rem; padding-bottom: 10px; border-bottom: 2px solid var(--primary-orange);">产品型号对比 / Models</h3>
+                <div class="table-container">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>技术参数</th>
+                                <th>S500H-4G</th>
+                                <th>S500H-4G PRO</th>
+                                <th>S500H-WIFI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>通讯方式</strong></td>
+                                <td>4G cat-1</td>
+                                <td>4G cat-1</td>
+                                <td>WIFI + 蓝牙</td>
+                            </tr>
+                            <tr>
+                                <td><strong>注油量</strong></td>
+                                <td colspan="3">0.78-500ml(根据实际设置)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>润滑周期</strong></td>
+                                <td colspan="3">1-999小时（根据实际设置）</td>
+                            </tr>
+                            <tr>
+                                <td><strong>油罐容量</strong></td>
+                                <td colspan="3">300ml/500ml</td>
+                            </tr>
+                            <tr>
+                                <td><strong>适用场景</strong></td>
+                                <td>高负载/长周期</td>
+                                <td>极恶劣环境</td>
+                                <td>高负载/长周期</td>
+                            </tr>
+                            <tr>
+                                <td><strong>环境温度</strong></td>
+                                <td colspan="3">-20℃ ~ +65℃</td>
+                            </tr>
+                            <tr>
+                                <td><strong>电源方式</strong></td>
+                                <td colspan="3">外接5V-2A / 锂电池5V 2.6Ah(可充电) / 干电池5V 2.9Ah（不可充电，防爆）</td>
+                            </tr>
+                            <tr>
+                                <td><strong>工作压力</strong></td>
+                                <td colspan="3">0-10bar（最大）</td>
+                            </tr>
+                            <tr>
+                                <td><strong>工作温度</strong></td>
+                                <td colspan="3">-20℃ ~ +65℃</td>
+                            </tr>
+                            <tr>
+                                <td><strong>防护等级</strong></td>
+                                <td>IP65</td>
+                                <td>IP68</td>
+                                <td>IP65</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <h3 style="color: var(--primary-dark); margin-bottom: 15px; font-size: 1.3rem; padding-bottom: 10px; border-bottom: 2px solid var(--primary-orange);">核心技术参数 / Technical Specs</h3>
+            <div class="product-cards">
+                <div class="product-card">
+                    <h3><i class="fas fa-tachometer-alt" style="margin-right: 8px;"></i>工作参数</h3>
+                    <div class="product-spec">工作压力：0-10bar（最大）</div>
+                    <div class="product-spec">适用油脂：NLGI 3#及以下</div>
+                    <div class="product-spec">排空时间：个性化设置</div>
+                    <div class="product-spec">供油管长：最长5米</div>
+                    <div class="product-spec">工作温度：-20℃ ~ +65℃</div>
+                </div>
+                <div class="product-card">
+                    <h3><i class="fas fa-temperature-low" style="margin-right: 8px;"></i>环境适应性</h3>
+                    <div class="product-spec">环境温度：-20℃ ~ +65℃</div>
+                    <div class="product-spec">防护等级：IP65/IP68</div>
+                    <div class="product-spec">防爆等级：Ex ic IIC T4 Gc</div>
+                    <div class="product-spec">安装方式：多种可选</div>
+                </div>
+                <div class="product-card">
+                    <h3><i class="fas fa-bolt" style="margin-right: 8px;"></i>电源与通讯</h3>
+                    <div class="product-spec">电池：5V 2.6Ah锂电池（可充电）</div>
+                    <div class="product-spec">外接电源：5V-2A</div>
+                    <div class="product-spec">通讯：4G/WIFI/NB-IoT/蓝牙+网关</div>
+                    <div class="product-spec">油罐容量：300 / 500ml</div>
+                    <div class="product-spec">续航时间：1-2年（根据设置）</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; padding: 20px; background-color: var(--primary-light); border-radius: var(--border-radius); border-left: 4px solid var(--primary-orange);">
+                <h3 style="color: var(--primary-orange); margin-bottom: 12px; font-size: 1.2rem;"><i class="fas fa-info-circle" style="margin-right: 8px;"></i>产品型号说明</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div>
+                        <h4 style="color: var(--primary-dark); margin-bottom: 6px; font-size: 1.1rem;">S500H-4G系列</h4>
+                        <p style="font-size: 0.9rem; line-height: 1.5;">采用4G cat-1通讯，适用于户外或无WIFI环境，覆盖范围广，移动性好，支持高负载长周期润滑。</p>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--primary-dark); margin-bottom: 6px; font-size: 1.1rem;">S500H-4G PRO系列</h4>
+                        <p style="font-size: 0.9rem; line-height: 1.5;">增强型4G版本，IP68防护等级，适用于极恶劣工业环境，耐高温高湿，抗冲击振动。</p>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--primary-dark); margin-bottom: 6px; font-size: 1.1rem;">S500H-WIFI系列</h4>
+                        <p style="font-size: 0.9rem; line-height: 1.5;">WIFI+蓝牙双模通讯，适用于室内或有稳定WIFI网络的环境，支持高负载长周期润滑。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 核心功能 -->
+        <section id="features" class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div>
+                    <h2 class="section-title">核心功能</h2>
+                    <p class="section-subtitle">Core Features</p>
+                </div>
+            </div>
+            <!-- 智能润滑系统动画演示 -->
+<div style="margin-top: 40px;">
+    <h3 style="color: var(--primary-orange); margin-bottom: 20px; text-align: center; font-size: 1.4rem;">
+        <i class="fas fa-play-circle" style="margin-right: 8px;"></i>智能润滑系统动画演示
+    </h3>
+    
+    <div class="demo-container">
+        <iframe src="lubricator-demo.html" id="lubricator-demo" 
+                title="蜀利元智能润滑系统动画演示" 
+                allowfullscreen></iframe>
+        <div class="demo-overlay"></div>
+    </div>
+    
+    <div class="demo-note">
+        <p>演示展示了蜀利元智能润滑系统的工作原理：润滑器自动安装到电机上，通过远程手机App实现监控和控制。</p>
+        <p>点击手机界面上的按钮可以远程启停系统，观察油量变化和信号传输过程。</p>
+    </div>
+</div>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>远程智能控制</h3>
+                        <p>支持手机小程序和PC端远程控制，实时监控设备状态、温度和振动，远程设置润滑参数，无需现场操作。</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>定时定量润滑</h3>
+                        <p>精准控制注油时间和注油量（0.78-500ml可调），多种润滑模式可选，确保设备得到恰到好处的润滑。</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>多设备集中管理</h3>
+                        <p>可一键管理数百台设备，集中监控、统一设置，提高管理效率，降低运维成本。</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>全密封设计</h3>
+                        <p>IP65/IP68防护等级，防尘防水，适应各种恶劣工业环境，确保润滑系统稳定运行。</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-battery-full"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>多电源供电</h3>
+                        <p>支持外接5V-2A电源和5V 2.6Ah锂电池（可充电）两种供电方式，适应不同场景需求。</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>智能预警系统</h3>
+                        <p>油量不足、电池低电量、设备离线、压力异常、温度异常等多级预警，及时发现问题，减少停机时间。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; padding: 20px; background-color: var(--primary-light); border-radius: var(--border-radius); border-left: 4px solid var(--primary-orange);">
+                <h3 style="color: var(--primary-orange); margin-bottom: 12px; font-size: 1.2rem;"><i class="fas fa-satellite-dish" style="margin-right: 8px;"></i>智能监测功能</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div>
+                        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                            <div style="background-color: var(--primary-orange); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                                <i class="fas fa-thermometer-half"></i>
+                            </div>
+                            <h4 style="color: var(--primary-dark); margin: 0; font-size: 1.1rem;">温度远程监测</h4>
+                        </div>
+                        <p style="font-size: 0.9rem; line-height: 1.5; margin-left: 47px;">实时监测设备温度，异常温度自动报警，预防设备过热损坏。</p>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                            <div style="background-color: var(--primary-orange); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                                <i class="fas fa-vibrate"></i>
+                            </div>
+                            <h4 style="color: var(--primary-dark); margin: 0; font-size: 1.1rem;">振动远程监测</h4>
+                        </div>
+                        <p style="font-size: 0.9rem; line-height: 1.5; margin-left: 47px;">实时监测设备振动状态，异常振动自动预警，提前发现设备故障。</p>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                            <div style="background-color: var(--primary-orange); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                                <i class="fas fa-tint"></i>
+                            </div>
+                            <h4 style="color: var(--primary-dark); margin: 0; font-size: 1.1rem;">油量精准监测</h4>
+                        </div>
+                        <p style="font-size: 0.9rem; line-height: 1.5; margin-left: 47px;">精确监测油罐剩余油量，油量不足自动预警，确保不间断润滑。</p>
+                    </div>
+                </div>
+            </div>
+            
+                 </section>
+
+        <!-- 应用场景 -->
+        <section id="applications" class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-industry"></i>
+                </div>
+                <div>
+                    <h2 class="section-title">应用场景</h2>
+                    <p class="section-subtitle">Application Scenarios</p>
+                </div>
+            </div>
+            
+            <div class="scenes-container">
+                <div class="scene-card">
+                    <div class="scene-header">
+                        <h3><i class="fas fa-motorcycle" style="margin-right: 8px;"></i>电动机润滑</h3>
+                    </div>
+                    <div class="scene-body">
+                        <p><strong>润滑点：</strong>驱动端轴承 & 非驱动端轴承</p>
+                        <p><strong>传统润滑挑战：</strong></p>
+                        <ul>
+                            <li>油脂量控制难：过多导致过热起火，过少导致摩擦增大</li>
+                            <li>需停机润滑，影响生产</li>
+                            <li>人工涂抹不均匀</li>
+                        </ul>
+                        <p><strong>智能润滑优势：</strong></p>
+                        <ul>
+                            <li>定时定量精准润滑（0.78-500ml可调）</li>
+                            <li>运行中润滑，无需停机</li>
+                            <li>降低油脂消耗30%以上</li>
+                            <li>延长轴承寿命2-3倍</li>
+                            <li>温度振动实时监测，预防故障</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="scene-card">
+                    <div class="scene-header">
+                        <h3><i class="fas fa-tint" style="margin-right: 8px;"></i>泵类设备润滑</h3>
+                    </div>
+                    <div class="scene-body">
+                        <p><strong>润滑点：</strong>泵轴轴承 & 密封部位</p>
+                        <p><strong>传统润滑挑战：</strong></p>
+                        <ul>
+                            <li>环境恶劣：粉尘、酸碱介质</li>
+                            <li>危险区域：人工操作风险高</li>
+                            <li>润滑剂污染：跑冒滴漏</li>
+                        </ul>
+                        <p><strong>智能润滑优势：</strong></p>
+                        <ul>
+                            <li>全密封设计，防污染</li>
+                            <li>远程操作，减少人工危险</li>
+                            <li>自动精准注油，减少浪费</li>
+                            <li>IP65防护，适应恶劣环境</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="scene-card">
+                    <div class="scene-header">
+                        <h3><i class="fas fa-conveyor-belt" style="margin-right: 8px;"></i>输送机润滑</h3>
+                    </div>
+                    <div class="scene-body">
+                        <p><strong>润滑点：</strong>驱动轮轴承 & 改向轮轴承</p>
+                        <p><strong>传统润滑挑战：</strong></p>
+                        <ul>
+                            <li>润滑点高空，难以接近</li>
+                            <li>需不停机润滑</li>
+                            <li>防止污物进入润滑点</li>
+                        </ul>
+                        <p><strong>智能润滑优势：</strong></p>
+                        <ul>
+                            <li>远程监控，无需攀爬</li>
+                            <li>运行中润滑，不停机</li>
+                            <li>全密封设计，防污物进入</li>
+                            <li>集中管理数百个润滑点</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; padding: 15px; background-color: var(--primary-light); border-radius: var(--border-radius); border-left: 4px solid var(--primary-orange);">
+                <h3 style="color: var(--primary-orange); margin-bottom: 12px; font-size: 1.2rem;"><i class="fas fa-cogs" style="margin-right: 8px;"></i>其他适用设备</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                    <div style="background-color: var(--text-light); padding: 10px 12px; border-radius: var(--border-radius); text-align: center;">
+                        <i class="fas fa-fan" style="color: var(--primary-orange); font-size: 1.3rem; margin-bottom: 6px;"></i>
+                        <div style="font-size: 0.9rem;">鼓风机/风扇</div>
+                    </div>
+                    <div style="background-color: var(--text-light); padding: 10px 12px; border-radius: var(--border-radius); text-align: center;">
+                        <i class="fas fa-cog" style="color: var(--primary-orange); font-size: 1.3rem; margin-bottom: 6px;"></i>
+                        <div style="font-size: 0.9rem;">齿轮箱</div>
+                    </div>
+                    <div style="background-color: var(--text-light); padding: 10px 12px; border-radius: var(--border-radius); text-align: center;">
+                        <i class="fas fa-link" style="color: var(--primary-orange); font-size: 1.3rem; margin-bottom: 6px;"></i>
+                        <div style="font-size: 0.9rem;">链条传动</div>
+                    </div>
+                    <div style="background-color: var(--text-light); padding: 10px 12px; border-radius: var(--border-radius); text-align: center;">
+                        <i class="fas fa-sliders-h" style="color: var(--primary-orange); font-size: 1.3rem; margin-bottom: 6px;"></i>
+                        <div style="font-size: 0.9rem;">直线导轨</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 客户案例 -->
+        <section id="cases" class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div>
+                    <h2 class="section-title">客户案例</h2>
+                    <p class="section-subtitle">Customer Cases</p>
+                </div>
+            </div>
+            
+            <div class="case-studies">
+                <div class="case-card">
+                    <h3><i class="fas fa-industry" style="margin-right: 8px;"></i>某大型造纸厂</h3>
+                    <p><strong>应用设备：</strong>浆泵、真空泵</p>
+                    <p><strong>安装型号：</strong>S500H-4G PRO (86台)</p>
+                    <p><strong>使用效果：</strong>通过智能润滑系统，实现了精准润滑，减少了人工维护频率，提高了设备运行稳定性。</p>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-value">35%</div>
+                            <div class="stat-label">油脂消耗减少</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">52%</div>
+                            <div class="stat-label">故障率降低</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">28万</div>
+                            <div class="stat-label">年节省成本(元)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="case-card">
+                    <h3><i class="fas fa-mountain" style="margin-right: 8px;"></i>某矿山企业</h3>
+                    <p><strong>应用设备：</strong>输送机、破碎机</p>
+                    <p><strong>安装型号：</strong>S500H-4G (124台)</p>
+                    <p><strong>使用效果：</strong>解决了高空润滑点难以接近的问题，实现了远程监控和自动润滑，大幅减少了维护时间。</p>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-value">70%</div>
+                            <div class="stat-label">维护时间减少</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">45%</div>
+                            <div class="stat-label">停机时间减少</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">高空作业事故</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="case-card">
+                    <h3><i class="fas fa-hard-hat" style="margin-right: 8px;"></i>某钢铁集团</h3>
+                    <p><strong>应用设备：</strong>电动机、鼓风机</p>
+                    <p><strong>安装型号：</strong>S500H-WIFI (210台)</p>
+                    <p><strong>使用效果：</strong>利用厂区WIFI网络，实现了24小时不间断智能润滑，设备运行温度明显降低，轴承寿命显著延长。</p>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-value">8℃</div>
+                            <div class="stat-label">轴承温度降低</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">65万</div>
+                            <div class="stat-label">年节约人工成本(元)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">24/7</div>
+                            <div class="stat-label">不间断润滑</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background-color: var(--primary-light); padding: 20px; border-radius: var(--border-radius); margin-top: 30px;">
+                <h3 style="color: var(--primary-orange); margin-bottom: 12px; display: flex; align-items: center; font-size: 1.2rem;">
+                    <i class="fas fa-lightbulb" style="margin-right: 8px;"></i>
+                    设备使用说明
+                </h3>
+                
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>选择安装位置并固定</h3>
+                            <p>根据设备润滑点位置，选择合适的安装方式（直接安装、加杆安装、挂壁安装等），将润滑器固定到位。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>连接供油管</h3>
+                            <p>将供油管连接到润滑器出口和设备的润滑点，确保连接牢固，供油管最长可达5米。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>安装油罐并通电</h3>
+                            <p>将装满润滑脂的油罐安装到润滑器上，顺时针旋紧，选择电源方式（外接电源/锂电池），打开电源开关，设备开始初始化。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3>扫码绑定设备，设置参数</h3>
+                            <p>使用手机小程序扫描设备二维码，绑定设备，根据设备需求设置润滑参数（注油时间、注油量等）。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 25px; padding: 15px; background-color: rgba(255, 102, 0, 0.1); border-radius: var(--border-radius); border-left: 4px solid var(--primary-orange);">
+                    <h4 style="color: var(--primary-orange); margin-bottom: 8px; font-size: 1.1rem;">LED状态指示灯说明</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                        <div style="display: flex; align-items: center; background-color: var(--text-light); padding: 8px; border-radius: var(--border-radius);">
+                            <div style="width: 12px; height: 12px; background-color: #00FF00; border-radius: 50%; margin-right: 8px;"></div>
+                            <span style="font-size: 0.9rem;"><strong>绿灯慢闪：</strong>正常运行</span>
+                        </div>
+                        <div style="display: flex; align-items: center; background-color: var(--text-light); padding: 8px; border-radius: var(--border-radius);">
+                            <div style="width: 12px; height: 12px; background-color: #FFFF00; border-radius: 50%; margin-right: 8px;"></div>
+                            <span style="font-size: 0.9rem;"><strong>黄1灯快闪：</strong>电池电量低</span>
+                        </div>
+                        <div style="display: flex; align-items: center; background-color: var(--text-light); padding: 8px; border-radius: var(--border-radius);">
+                            <div style="width: 12px; height: 12px; background-color: #FF0000; border-radius: 50%; margin-right: 8px;"></div>
+                            <span style="font-size: 0.9rem;"><strong>红1灯快闪：</strong>设备离线</span>
+                        </div>
+                        <div style="display: flex; align-items: center; background-color: var(--text-light); padding: 8px; border-radius: var(--border-radius);">
+                            <div style="width: 12px; height: 12px; background-color: #FFFF00; border-radius: 50%; margin-right: 8px;"></div>
+                            <span style="font-size: 0.9rem;"><strong>黄2灯快闪：</strong>油量接近耗尽</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 联系我们 -->
+        <section id="contact" class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-address-card"></i>
+                </div>
+                <div>
+                    <h2 class="section-title">联系我们</h2>
+                    <p class="section-subtitle">Contact Us</p>
+                </div>
+            </div>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 30px; margin-top: 25px;">
+                <div style="flex: 1; min-width: 280px;">
+                    <h3 style="color: var(--primary-dark); margin-bottom: 15px; border-left: 4px solid var(--primary-orange); padding-left: 10px; font-size: 1.2rem;">服务与支持体系</h3>
+                    
+                    <div class="feature-item" style="margin-bottom: 15px; background-color: var(--primary-light);">
+                        <div class="feature-icon" style="background-color: var(--accent-blue);">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3 style="font-size: 1.1rem;">产品保障</h3>
+                            <p style="font-size: 0.95rem;"><strong>质保期：</strong>1年<br><strong>终身维护</strong><br><strong>备件供应</strong></p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item" style="margin-bottom: 15px; background-color: var(--primary-light);">
+                        <div class="feature-icon" style="background-color: var(--accent-blue);">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3 style="font-size: 1.1rem;">技术支持</h3>
+                            <p style="font-size: 0.95rem;"><strong>7×24小时</strong>技术服务热线<br><strong>远程诊断</strong>与指导<br><strong>现场技术支持</strong></p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item" style="background-color: var(--primary-light);">
+                        <div class="feature-icon" style="background-color: var(--accent-blue);">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3 style="font-size: 1.1rem;">培训服务</h3>
+                            <p style="font-size: 0.95rem;"><strong>产品操作</strong>培训<br><strong>系统使用</strong>培训<br><strong>维护保养</strong>培训</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="flex: 1; min-width: 280px;">
+                    <h3 style="color: var(--primary-dark); margin-bottom: 15px; border-left: 4px solid var(--primary-orange); padding-left: 10px; font-size: 1.2rem;">联系方式</h3>
+                    
+                    <div style="background-color: var(--primary-light); padding: 20px; border-radius: var(--border-radius); border: 1px solid var(--gray-light);">
+                        <div style="display: flex; align-items: flex-start; margin-bottom: 15px;">
+                            <i class="fas fa-building" style="color: var(--primary-orange); margin-right: 12px; font-size: 1.1rem; margin-top: 3px;"></i>
+                            <div>
+                                <h4 style="color: var(--primary-dark); margin-bottom: 5px; font-size: 1.1rem;">公司名称</h4>
+                                <p style="font-size: 0.95rem;"><strong>成都蜀利元机电有限公司</strong></p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; align-items: flex-start; margin-bottom: 15px;">
+                            <i class="fas fa-map-marker-alt" style="color: var(--primary-orange); margin-right: 12px; font-size: 1.1rem; margin-top: 3px;"></i>
+                            <div>
+                                <h4 style="color: var(--primary-dark); margin-bottom: 5px; font-size: 1.1rem;">公司地址</h4>
+                                <p style="font-size: 0.95rem;"><strong>四川省成都市高新区天府大道中段888号</strong></p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; align-items: flex-start; margin-bottom: 15px;">
+                            <i class="fas fa-phone" style="color: var(--primary-orange); margin-right: 12px; font-size: 1.1rem; margin-top: 3px;"></i>
+                            <div>
+                                <h4 style="color: var(--primary-dark); margin-bottom: 5px; font-size: 1.1rem;">联系电话</h4>
+                                <p style="font-size: 0.95rem;"><strong>028-88417995</strong></p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; align-items: flex-start; margin-bottom: 15px;">
+                            <i class="fas fa-envelope" style="color: var(--primary-orange); margin-right: 12px; font-size: 1.1rem; margin-top: 3px;"></i>
+                            <div>
+                                <h4 style="color: var(--primary-dark); margin-bottom: 5px; font-size: 1.1rem;">电子邮箱</h4>
+                                <p style="font-size: 0.95rem;"><strong>sales@shuliyuan.com.cn</strong></p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; align-items: flex-start;">
+                            <i class="fas fa-globe" style="color: var(--primary-orange); margin-right: 12px; font-size: 1.1rem; margin-top: 3px;"></i>
+                            <div>
+                                <h4 style="color: var(--primary-dark); margin-bottom: 5px; font-size: 1.1rem;">官方网站</h4>
+                                <p style="font-size: 0.95rem;"><strong>https://shuliyuan.com.cn</strong></p>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 25px; text-align: center; padding: 15px; background-color: var(--text-light); border-radius: var(--border-radius);">
+                            <div style="margin-bottom: 8px;">
+                                <i class="fas fa-qrcode" style="font-size: 3rem; color: var(--primary-orange);"></i>
+                            </div>
+                            <p style="font-weight: 500; font-size: 0.95rem;">扫码关注微信公众号</p>
+                            <p style="font-size: 0.85rem; color: var(--gray-medium);">获取最新产品资讯和技术支持</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; text-align: center; padding: 15px; background: linear-gradient(to right, var(--primary-orange), var(--accent-blue)); color: white; border-radius: var(--border-radius);">
+                <h3 style="margin-bottom: 12px; font-size: 1.2rem;">精研流动，重塑润滑</h3>
+                <p style="font-size: 0.95rem;">成都蜀利元机电有限公司期待与您的合作</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>蜀利元机电</h3>
+                    <p style="font-size: 0.9rem;">成都蜀利元机电有限公司致力于工业智能润滑系统的研发与制造，为客户提供高效、可靠、智能的润滑解决方案。</p>
+                    <div style="margin-top: 15px;">
+                        <div style="color: var(--primary-orange); font-weight: 500; margin-bottom: 5px; font-size: 0.9rem;">全国服务热线</div>
+                        <div style="font-size: 1.3rem; font-weight: 700; color: white;">028-88417995</div>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="#cover">首页</a></li>
+                        <li><a href="#about">公司简介</a></li>
+                        <li><a href="#painpoints">行业痛点</a></li>
+                        <li><a href="#comparison">智能润滑系统</a></li>
+                        <li><a href="#lubrication">正确润滑方法</a></li>
+                        <li><a href="#solutions">产品解决方案</a></li>
+                        <li><a href="#products">产品中心</a></li>
+                        <li><a href="#features">核心功能</a></li>
+                        <li><a href="#applications">应用场景</a></li>
+                        <li><a href="#cases">客户案例</a></li>
+                        <li><a href="javascript:window.print()" style="color: var(--primary-orange);">打印PDF版本</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>产品系列</h3>
+                    <ul>
+                        <li><a href="#products">S500H-4G 系列</a></li>
+                        <li><a href="#products">S500H-4G PRO 系列</a></li>
+                        <li><a href="#products">S500H-WIFI 系列</a></li>
+                        <li><a href="#features">智能润滑管理系统</a></li>
+                        <li><a href="#contact">定制解决方案</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>联系我们</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i> 成都市高新区天府大道中段888号</li>
+                        <li><i class="fas fa-phone" style="margin-right: 8px;"></i> 028-88417995</li>
+                        <li><i class="fas fa-envelope" style="margin-right: 8px;"></i> sales@shuliyuan.com.cn</li>
+                        <li><i class="fas fa-clock" style="margin-right: 8px;"></i> 周一至周五 9:00-18:00</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2024 成都蜀利元机电有限公司 版权所有 </p>
+                <p>精研流动，重塑润滑 - 为行业赋能</p>
+                <p style="margin-top: 10px; font-size: 0.75rem;">本宣传手册内容仅供参考，产品规格如有变更，恕不另行通知。</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 页面加载进度条
+        const loadingBar = document.getElementById('loading-bar');
+        let loadingProgress = 0;
+        
+        function updateLoadingBar() {
+            loadingProgress += Math.random() * 15;
+            if (loadingProgress > 100) loadingProgress = 100;
+            loadingBar.style.width = loadingProgress + '%';
+            
+            if (loadingProgress < 100) {
+                setTimeout(updateLoadingBar, 100);
+            } else {
+                setTimeout(() => {
+                    loadingBar.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingBar.style.display = 'none';
+                    }, 300);
+                }, 300);
+            }
+        }
+        
+        // 网络状态监测
+        const networkNotification = document.getElementById('network-notification');
+        
+        function showNetworkNotification(message, isSuccess = false) {
+            networkNotification.textContent = message;
+            networkNotification.classList.toggle('success', isSuccess);
+            networkNotification.classList.add('show');
+            
+            setTimeout(() => {
+                networkNotification.classList.remove('show');
+            }, 3000);
+        }
+        
+        window.addEventListener('online', () => {
+            showNetworkNotification('网络已连接', true);
+        });
+        
+        window.addEventListener('offline', () => {
+            showNetworkNotification('网络已断开，部分功能可能受限');
+        });
+        
+        // 触摸设备检测
+        if ('ontouchstart' in window || navigator.maxTouchPoints) {
+            document.body.classList.add('touch-device');
+        }
+        
+        // 移动端菜单切换
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        const quickNav = document.getElementById('quickNav');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+            mobileMenuBtn.setAttribute('aria-expanded', !isExpanded);
+            navLinks.classList.toggle('active');
+            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+            const icon = mobileMenuBtn.querySelector('i');
+            if (icon.classList.contains('fa-bars')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        // 点击菜单项后关闭菜单
+        document.querySelectorAll('.nav-links a, .quick-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    navLinks.classList.remove('active');
+                    document.body.style.overflow = '';
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                }
+                
+                // 更新快速导航活动状态
+                if (link.hash) {
+                    document.querySelectorAll('.quick-nav a').forEach(quickLink => {
+                        quickLink.classList.remove('active');
+                    });
+                    document.querySelector(`.quick-nav a[href="${link.hash}"]`)?.classList.add('active');
+                }
+            });
+        });
+        
+        // 平滑滚动到锚点
+        function scrollToSection(sectionId) {
+            const targetElement = document.getElementById(sectionId);
+            if (targetElement) {
+                const offset = 80;
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+                
+                // 更新导航活动状态
+                document.querySelectorAll('.nav-links a, .quick-nav a').forEach(link => {
+                    link.classList.remove('active');
+                });
+                document.querySelector(`.nav-links a[href="#${sectionId}"]`)?.classList.add('active');
+                document.querySelector(`.quick-nav a[href="#${sectionId}"]`)?.classList.add('active');
+            }
+        }
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                if (this.getAttribute('href') === '#') return;
+                if (this.getAttribute('href') === 'javascript:window.print()') return;
+                
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                scrollToSection(targetId);
+            });
+        });
+        
+        // 导航栏滚动效果
+        let lastScrollTop = 0;
+        const navbar = document.querySelector('.navbar');
+        const backToTop = document.getElementById('backToTop');
+        const shareButton = document.getElementById('shareButton');
+        
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // 向下滚动时隐藏导航栏，向上滚动时显示
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                navbar.style.transform = 'translateY(-100%)';
+            } else {
+                navbar.style.transform = 'translateY(0)';
+            }
+            
+            lastScrollTop = scrollTop;
+            
+            // 显示/隐藏回到顶部按钮
+            if (scrollTop > 500) {
+                backToTop.classList.add('visible');
+                shareButton.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+                shareButton.classList.remove('visible');
+            }
+            
+            // 更新导航活动链接
+            let current = '';
+            const sections = document.querySelectorAll('.section');
+            const scrollOffset = 150;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollTop >= (sectionTop - scrollOffset)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            if (current) {
+                document.querySelectorAll('.nav-links a').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+                
+                document.querySelectorAll('.quick-nav a').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+        
+        // 回到顶部功能
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // 分享功能
+        shareButton.addEventListener('click', async () => {
+            const shareData = {
+                title: '智能单点润滑器 - 成都蜀利元机电有限公司',
+                text: '智能单点润滑器宣传手册 - 远程控制、定时定量注油的智能润滑解决方案',
+                url: window.location.href,
+            };
+            
+            try {
+                if (navigator.share) {
+                    await navigator.share(shareData);
+                } else {
+                    // 备用方案：复制链接到剪贴板
+                    await navigator.clipboard.writeText(window.location.href);
+                    alert('链接已复制到剪贴板，您可以分享给他人了！');
+                }
+            } catch (err) {
+                console.log('分享取消或失败:', err);
+            }
+        });
+        
+        // 更新当前时间
+        function updateCurrentTime() {
+            const now = new Date();
+            const currentTimeElement = document.getElementById('current-time');
+            if (currentTimeElement) {
+                const year = now.getFullYear();
+                const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                const day = now.getDate().toString().padStart(2, '0');
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                currentTimeElement.textContent = `更新于：${year}年${month}月${day}日 ${hours}:${minutes}`;
+            }
+        }
+        
+        // 打印功能优化
+        function printDocument() {
+            alert('正在生成PDF宣传手册...\n\n打印提示：\n1. 选择"另存为PDF"\n2. 在"更多设置"中勾选"背景图形"\n3. 页边距选择"最小值"\n4. 缩放选择"适合页面"');
+            
+            // 添加打印前的临时样式
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @media print {
+                    body * {
+                        visibility: hidden;
+                    }
+                    .section, .section * {
+                        visibility: visible;
+                    }
+                    .section {
+                        position: relative;
+                        left: 0;
+                        top: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            setTimeout(() => {
+                window.print();
+                setTimeout(() => {
+                    document.head.removeChild(style);
+                }, 100);
+            }, 1000);
+        }
+        
+        // 防止移动端双击缩放
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // 注油器动画演示代码
+        const lubricatorDemoHTML = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蜀利元智能润滑系统 - 远程监控演示</title>
+    <style>
+        /* --- 全局变量与基础设置 --- */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --motor-color: #475569;
+            --motor-detail: #64748b;
+            --brand-orange: #ff6b00;
+            --brand-blue: #0056b3;
+            --oil-color: #f59e0b; /* 润滑油金黄色 */
+            --phone-bezel: #1e293b;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000; /* 影院背景 */
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- 16:9 舞台容器 --- */
+        #stage {
+            width: 100vw;
+            max-width: 177.78vh; /* 强制16:9 */
+            height: 56.25vw;
+            max-height: 100vh;
+            background: var(--bg-gradient);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* 电影遮幅 */
+        .cinema-bar {
+            position: absolute;
+            width: 100%;
+            height: 8%;
+            background: #0f172a;
+            z-index: 100;
+            left: 0;
+        }
+        .bar-top { top: 0; display: flex; align-items: center; padding-left: 5%; }
+        .bar-bottom { bottom: 0; }
+
+        /* 顶部品牌Logo */
+        .brand-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            opacity: 0.9;
+        }
+        .brand-highlight { color: var(--brand-orange); }
+
+        /* --- 字幕系统 --- */
+        .subtitle-container {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 90;
+            width: 80%;
+            text-shadow: 0 2px 4px rgba(255,255,255,0.8);
+        }
+        .sub-cn {
+            font-size: 2.2vw;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 0.5vh;
+            transition: opacity 0.5s;
+        }
+        .sub-en {
+            font-size: 1.2vw;
+            color: var(--text-secondary);
+            font-weight: 300;
+            transition: opacity 0.5s;
+        }
+
+        /* --- 布局区域 --- */
+        .zone-left {
+            position: absolute;
+            left: 5%;
+            top: 20%;
+            width: 50%;
+            height: 60%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .zone-right {
+            position: absolute;
+            right: 5%;
+            top: 15%;
+            width: 35%;
+            height: 70%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- 电机模型 --- */
+        .motor-container {
+            position: relative;
+            width: 360px;
+            height: 280px;
+        }
+
+        .motor-base {
+            width: 300px;
+            height: 200px;
+            background: var(--motor-color);
+            border-radius: 20px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            box-shadow: inset 10px 10px 20px rgba(255,255,255,0.1), 10px 20px 30px rgba(0,0,0,0.3);
+            /* 散热片纹理 */
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(0,0,0,0.2) 20px, rgba(0,0,0,0.2) 24px);
+            z-index: 10;
+        }
+
+        .motor-shaft-housing {
+            position: absolute;
+            right: -20px;
+            bottom: 60px;
+            width: 50px;
+            height: 80px;
+            background: var(--motor-detail);
+            border-radius: 10px;
+            z-index: 5;
+        }
+
+        .motor-shaft {
+            position: absolute;
+            right: -60px;
+            bottom: 80px;
+            width: 80px;
+            height: 40px;
+            background: #cbd5e1;
+            border-radius: 4px;
+            z-index: 4;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        /* 转轴旋转动画 */
+        .shaft-line {
+            width: 100%;
+            height: 4px;
+            background: #94a3b8;
+            position: absolute;
+            top: 10px;
+        }
+        .shaft-line:nth-child(2) { top: 26px; }
+
+        @keyframes spin { 0% { transform: translateY(0); } 100% { transform: translateY(4px); } }
+        .spinning .shaft-line { animation: spin 0.1s linear infinite; }
+
+        /* 注油口位置标记（仅视觉参考，无实际元素） */
+        .injection-area {
+            position: absolute;
+            top: -5px;
+            left: 95px;
+            width: 30px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            z-index: 11;
+        }
+
+        /* --- 蜀利元润滑器（安装在电机上方） --- */
+        .lubricator {
+            position: absolute;
+            left: 85px; /* 调整位置，对齐注油口 */
+            top: -250px; /* 初始位置在更上方 */
+            width: 70px;
+            height: 120px;
+            z-index: 20;
+            transition: top 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(5px 5px 10px rgba(0,0,0,0.2));
+            transform-origin: bottom center;
+        }
+
+        .lub-head {
+            width: 100%;
+            height: 30px;
+            background: var(--brand-orange);
+            border-radius: 8px 8px 0 0;
+            color: white;
+            font-size: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .lub-tank {
+            width: 100%;
+            height: 80px;
+            background: rgba(255,255,255,0.9);
+            border: 2px solid #cbd5e1;
+            border-top: none;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* 油量 - 使用渐变黄色表示油量 */
+        .oil-level {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 90%;
+            background: linear-gradient(to top, #fbbf24, var(--oil-color));
+            transition: height 15s linear; /* 缓慢减少油量 */
+            border-radius: 0 0 6px 6px;
+        }
+
+        .lub-nozzle {
+            width: 20px;
+            height: 15px;
+            background: #475569;
+            margin: 0 auto;
+            border-radius: 0 0 4px 4px;
+            position: relative;
+            top: -1px;
+        }
+
+        /* 油管（从润滑器到电机） */
+        .oil-tube {
+            position: absolute;
+            left: 25px; /* 润滑器中心位置 */
+            top: 120px; /* 润滑器底部 */
+            width: 6px;
+            height: 0;
+            background: linear-gradient(to bottom, #94a3b8 0%, #64748b 100%);
+            z-index: 8;
+            border-radius: 3px;
+            opacity: 0;
+            transform-origin: top center;
+        }
+
+        /* 注油流动画 */
+        .oil-flow {
+            position: absolute;
+            left: 25px; /* 润滑器中心位置 */
+            top: 120px; /* 润滑器底部 */
+            width: 6px;
+            height: 0;
+            background: var(--oil-color);
+            opacity: 0;
+            z-index: 9;
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+        }
+        
+        @keyframes flowAnim {
+            0% { height: 0; opacity: 1; }
+            50% { height: 60px; opacity: 1; }
+            100% { height: 60px; opacity: 0; transform: translateY(10px); }
+        }
+        .flowing {
+            animation: flowAnim 1.2s infinite;
+        }
+
+        /* --- 手机界面 --- */
+        .phone {
+            width: 260px;
+            height: 520px;
+            background: var(--phone-bezel);
+            border-radius: 35px;
+            padding: 12px;
+            box-shadow: 20px 20px 50px rgba(0,0,0,0.3);
+            transform: translateX(150%); /* 初始在屏幕外 */
+            transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #f8fafc;
+            border-radius: 25px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .status-bar { height: 20px; background: white; width: 100%; }
+        
+        .app-nav {
+            background: var(--brand-blue);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .app-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
+        .app-subtitle { font-size: 10px; opacity: 0.8; }
+
+        .dashboard {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* 数据卡片 */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .card-info { text-align: right; }
+        .card-label { font-size: 10px; color: #64748b; }
+        .card-value { font-size: 16px; font-weight: bold; color: #0f172a; }
+
+        /* 远程控制按钮 */
+        .control-btn {
+            margin-top: auto;
+            width: 100%;
+            height: 50px;
+            border-radius: 25px;
+            border: none;
+            background: #10b981; /* Green */
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .control-btn.stop-mode {
+            background: #ef4444; /* Red */
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+        }
+
+        /* --- 信号传输动画 --- */
+        .signal-path {
+            position: absolute;
+            top: 40%;
+            left: 30%;
+            width: 40%;
+            height: 2px;
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        .signal-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--brand-blue);
+            border-radius: 50%;
+            top: -3px;
+            opacity: 0;
+            box-shadow: 0 0 10px var(--brand-blue);
+        }
+
+        @keyframes transmitLeft {
+            0% { left: 100%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { left: 0%; opacity: 0; }
+        }
+        @keyframes transmitRight {
+            0% { left: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { left: 100%; opacity: 0; }
+        }
+
+        /* --- 状态类 --- */
+        .lub-installed { top: -10px !important; } /* 安装位置：电机上方 */
+        .tube-extended { height: 60px !important; opacity: 1 !important; } /* 油管延伸 */
+        .phone-visible { transform: translateX(0) !important; }
+        .vibrating { animation: vibrate 0.1s infinite; }
+
+        @keyframes vibrate {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(1px, 1px); }
+            50% { transform: translate(-1px, -1px); }
+            75% { transform: translate(-1px, 1px); }
+            100% { transform: translate(0, 0); }
+        }
+        
+        /* --- 安装动画效果 --- */
+        @keyframes installShake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(1deg); }
+            50% { transform: rotate(-1deg); }
+            75% { transform: rotate(0.5deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        .installing {
+            animation: installShake 0.3s ease-in-out 3;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="stage">
+        <!-- 顶部遮幅 -->
+        <div class="cinema-bar bar-top">
+            <div class="brand-title">蜀利元 <span class="brand-highlight">SHULIYUAN</span></div>
+        </div>
+        
+        <!-- 左侧：设备区 -->
+        <div class="zone-left">
+            <div class="motor-container" id="motor-group">
+                <!-- 润滑器 -->
+                <div class="lubricator" id="lubricator">
+                    <div class="lub-head">蜀利元</div>
+                    <div class="lub-tank">
+                        <div class="oil-level" id="real-oil-level"></div>
+                    </div>
+                    <div class="lub-nozzle"></div>
+                </div>
+                
+                <!-- 油管（从润滑器到电机） -->
+                <div class="oil-tube" id="oil-tube"></div>
+                
+                <!-- 注入的油流 -->
+                <div class="oil-flow" id="oil-flow-anim"></div>
+
+                <!-- 电机本体 -->
+                <div class="motor-base"></div>
+                <div class="motor-shaft-housing"></div>
+                <div class="motor-shaft spinning" id="shaft">
+                    <div class="shaft-line"></div>
+                    <div class="shaft-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 中间：信号层 -->
+        <div class="signal-path" id="signal-layer">
+            <!-- JS会在这里生成信号粒子 -->
+        </div>
+
+        <!-- 右侧：手机区 -->
+        <div class="zone-right">
+            <div class="phone" id="phone-device">
+                <div class="screen">
+                    <div class="status-bar"></div>
+                    <div class="app-nav">
+                        <div class="app-title">智能润滑监控</div>
+                        <div class="app-subtitle">Device ID: SLY-2023-X</div>
+                    </div>
+                    <div class="dashboard">
+                        <!-- 油量卡片 -->
+                        <div class="card">
+                            <div class="card-icon" style="background:#fff7ed; color:orange;">🛢</div>
+                            <div>
+                                <div class="card-label">剩余油量 Oil Level</div>
+                                <div class="card-value" id="disp-oil">100%</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 温度卡片 -->
+                        <div class="card">
+                            <div class="card-icon" style="background:#fef2f2; color:red;">🌡</div>
+                            <div class="card-info">
+                                <div class="card-label">电机温度 Temp</div>
+                                <div class="card-value" id="disp-temp">42.5°C</div>
+                            </div>
+                        </div>
+
+                        <!-- 振动卡片 -->
+                        <div class="card">
+                            <div class="card-icon" style="background:#eff6ff; color:blue;">⚡</div>
+                            <div class="card-info">
+                                <div class="card-label">振动监测 Vib</div>
+                                <div class="card-value" id="disp-vib">2.8 mm/s</div>
+                            </div>
+                        </div>
+
+                        <!-- 注油状态 -->
+                        <div class="card" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                            <div class="card-icon" style="font-size:14px;">⚙️</div>
+                            <div class="card-info">
+                                <div class="card-label">工作状态 Status</div>
+                                <div class="card-value" style="color:green; font-size:14px;" id="disp-status">自动注油中...</div>
+                            </div>
+                        </div>
+
+                        <button class="control-btn" id="btn-control">
+                            <span>●</span> 运行中 RUNNING
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部遮幅与字幕 -->
+        <div class="subtitle-container">
+            <div class="sub-cn" id="txt-cn"></div>
+            <div class="sub-en" id="txt-en"></div>
+        </div>
+        <div class="cinema-bar bar-bottom"></div>
+    </div>
+</body>
+</html>
